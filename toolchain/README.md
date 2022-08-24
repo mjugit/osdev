@@ -63,7 +63,7 @@ cd $HOME/code/osdev/toolchain
 mkdir build-gcc
 cd build-gcc
 
-../gcc-x.y.z/configure 
+../gcc-x.y.z/configure \
   --target=$TARGET \
   --prefix="$PREFIX" \
   --disable-nls \
