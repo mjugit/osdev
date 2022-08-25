@@ -22,7 +22,7 @@ These build instructions were tested on a GNU/Linux 5.19.3-arch1-1 host system w
 | mpc         | 1.2.1-2     |
 | mpfr        | 4.1.0.p13-3 |
 | texinfo     | 6.8-2       |
-| libisoburn 	| 1.5.4-2     |
+| libisoburn  | 1.5.4-2     |
 | binutils    | 2.39-3      |
 | gcc         | 12.2.0      |
 
