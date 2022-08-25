@@ -5,7 +5,7 @@ Preparing a separate toolchain for the new operating system will ease the develo
 - The __purpose__ of the cross-compiler is to enable us building software for a different machine, than we are developing on. In our case it targets the generic i686-elf architecture. Using a designated compiler instead of providing a hell of command line switches for each build, can take away some traps and pitfalls in advance. On top of that it minimizes the risk of messing something up because of a typo.
 
 - Building a compiler __requires__ a set of tools and libraries beeing installed on the development machine. If you have ever built some development tools on your own, you might recognize some of them. Make sure you have these installed! The build process takes some time and it would be frustrating to find out you missed something towards the end. 
-These are the required tools: _make, [bison](https://www.gnu.org/software/bison/), [flex](https://github.com/westes/flex), [gmp](https://gmplib.org/), mpc, [mpfr](https://www.mpfr.org/), [texinfo](https://www.gnu.org/software/texinfo/)_
+These are the required tools: _make, [bison](https://www.gnu.org/software/bison/), [flex](https://github.com/westes/flex), [gmp](https://gmplib.org/), mpc, [mpfr](https://www.mpfr.org/), [texinfo](https://www.gnu.org/software/texinfo/), [libisoburn](https://directory.fsf.org/wiki/Libisoburn)_
 
 - Finally we need the __source code__ that is to build. Download the [binutils](https://ftp.gnu.org/gnu/binutils/) and [gcc](https://ftp.gnu.org/gnu/gcc/) source code from the public GNU repository. Even though many different versions are offered there, experience has shown that the newer ones are usually the better choice. You can find them on the bottom of their respective page.
 
@@ -13,17 +13,18 @@ These are the required tools: _make, [bison](https://www.gnu.org/software/bison/
 
 These build instructions were tested on a GNU/Linux 5.19.3-arch1-1 host system with the package versions below.
 
-| Tool     | Version     |
-| -------- | ----------- |
-| make     | 4.3         |
-| bison    | 3.8.2       |
-| flex     | 2.6.4       |
-| gmp      | 6.2.1-2     |
-| mpc      | 1.2.1-2     |
-| mpfr     | 4.1.0.p13-3 |
-| texinfo  | 6.8-2       |
-| binutils | 2.39-3      |
-| gcc      | 12.2.0      |
+| Tool        | Version     |
+| --------    | ----------- |
+| make        | 4.3         |
+| bison       | 3.8.2       |
+| flex        | 2.6.4       |
+| gmp         | 6.2.1-2     |
+| mpc         | 1.2.1-2     |
+| mpfr        | 4.1.0.p13-3 |
+| texinfo     | 6.8-2       |
+| libisoburn 	| 1.5.4-2     |
+| binutils    | 2.39-3      |
+| gcc         | 12.2.0      |
 
 ## Building the toolchain
 
