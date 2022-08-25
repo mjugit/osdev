@@ -2,4 +2,6 @@ toolchain/*
 !toolchain/README.md
 !toolchain/build-crc.sh
 
+build/*
+
 *~
