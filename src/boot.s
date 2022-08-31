@@ -1,26 +1,43 @@
-	// Constants used for the Multiboot header
+	// Constants for the GNU Multiboot Specification
 	// See https://www.gnu.org/software/grub/manual/multiboot/multiboot.html
 	.set ALIGN_ON_PAGE_BOUNDARIES, 	1<<0
 	.set INCLUDE_MEMORY_INFO, 	1<<1
-	
-	.set MULTIBOOT_FLAGS, 		ALIGN_ON_PAGE_BOUNDARIES | INCLUDE_MEMORY_INFO
-	.set MULTIBOOT_MAGIC, 		0x1BADB002
-	.set MULTIBOOT_CHECKSUM, 	-(MULTIBOOT_MAGIC + MULTIBOOT_FLAGS)
+	.set ENABLE_GRAPHICS,		1<<2
+
+	.set MAGIC, 0x1badb002
+	.set FLAGS, ALIGN_ON_PAGE_BOUNDARIES | INCLUDE_MEMORY_INFO | ENABLE_GRAPHICS
+	.set CHECKSUM, -(MAGIC + FLAGS)
+
+	.set MODE_TYPE, 0    // 0 = Linear graphics mode
+	.set WIDTH,     640
+	.set HEIGHT,    480
+	.set DEPTH,     32
+
 
 	// Multiboot header
 	.section .multiboot
 	.align 4
-	.long MULTIBOOT_MAGIC
-	.long MULTIBOOT_FLAGS
-	.long MULTIBOOT_CHECKSUM
 
+	.long MAGIC
+	.long FLAGS
+	.long CHECKSUM
+
+	.skip 20
+
+	.long MODE_TYPE
+	.long WIDTH
+	.long HEIGHT
+	.long DEPTH
+
+	// Leave space for the returned header
+	.space 4 * 13
 
 	.section .bss
 	.align 16
 stack_bottom:
 	.skip 16384
 stack_top:
-
+	push %ebx
 
 	.section .text
 	.global _start
