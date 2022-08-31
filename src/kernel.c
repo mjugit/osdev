@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "console-font.h"
 
 #if defined(__linux__)
 #  error "This program needs to be build with a cross compiler"
@@ -11,26 +10,22 @@
 #  error "You have to use a ix86-elf compiler!"
 #endif
 
+
+
+#include "console-font.h"
+#include "include/string.h"
+
+
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
+#define FRAMEBUFFER_LOCATION 0xa0000
 
-void memcpy(void *dst, void *src, size_t count);
-void memset(void *dst, void *src, size_t size, size_t count);
+void write_string(int x, int y, const char *str);
 void kernel_main(void);
 
-void memcpy(void *dst, void *src, size_t count) {
-  for (size_t offset = 0; offset < count; offset++)
-    *(uint8_t*)(dst + offset) = *(uint8_t*)(src + offset);
-}
-
-void memset(void *dst, void *src, size_t size, size_t count) {
-  for (size_t offset = 0; offset < count; offset++)
-    memcpy(dst + offset * size, src, size);
-}
-
 void set_pixel(int pos_x, int pos_y, uint32_t color) {
-  void* location = (void*)0xA0000 + (SCREEN_WIDTH * pos_y * sizeof(color)) + (pos_x * sizeof(color));
-  memset(location, &color, 4, 1);
+  void* location = (void*)(FRAMEBUFFER_LOCATION) + (SCREEN_WIDTH * pos_y * sizeof(color)) + (pos_x * sizeof(color));
+  memset32(location, color, 1);
 }
 
 void putc(int pos_x, int pos_y, char ch, uint32_t color) {
@@ -52,9 +47,13 @@ void putc(int pos_x, int pos_y, char ch, uint32_t color) {
   }
 }
 
+void write_string(int x, int y, const char *str) {
+    for (int i = 0; str[i]; i++)
+      putc(x + i * 12, y, str[i], 0xaa3939);
+}
+
+
 void kernel_main(void) {
   char *str = "This is just a simple test.\0";
-
-  for (int i = 0; str[i]; i++)
-    putc(i * 12, 0, str[i], 0xffffffff);
+  write_string(10, 10, str);
 }
