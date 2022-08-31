@@ -8,7 +8,7 @@ ISO_DIR = ../build/iso
 BOOT_DST = ../build/iso/boot
 GRUB_DIR = ../build/iso/boot/grub
 
-OBJECTS = $(OBJ_DIR)/boot.o $(OBJ_DIR)/kernel.o $(OBJ_DIR)/string.o
+OBJECTS = $(OBJ_DIR)/boot.o $(OBJ_DIR)/kernel.o $(OBJ_DIR)/string.o $(OBJ_DIR)/font.o $(OBJ_DIR)/vga.o
 
 IMG = sys_img.bin
 
@@ -36,4 +36,10 @@ $(OBJ_DIR)/kernel.o: kernel.c
 	$(GCC) -c kernel.c -o $(OBJ_DIR)/kernel.o $(CFLAGS)
 
 $(OBJ_DIR)/string.o: include/string.c include/string.h
-	$(GCC) -c include/string.c -o $(OBJ_DIR)/string.o$(CFLAGS)
+	$(GCC) -c include/string.c -o $(OBJ_DIR)/string.o $(CFLAGS)
+
+$(OBJ_DIR)/font.o: include/font.c include/font.h
+	$(GCC) -c include/font.c -o $(OBJ_DIR)/font.o $(CFLAGS)
+
+$(OBJ_DIR)/vga.o: include/vga.c include/vga.h
+	$(GCC) -c include/vga.c -o $(OBJ_DIR)/vga.o $(CFLAGS)

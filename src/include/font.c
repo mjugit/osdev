@@ -1,7 +1,6 @@
-#ifndef CONSOLE_FONT_H
-#define CONSOLE_FONT_H
+#include "font.h"
 
-uint16_t FONT_12X16[] = {
+const uint16_t FONT_12x16[] = {
   /*
    * code=0, hex=0x00, ascii="^@"
    */
@@ -5122,5 +5121,3 @@ uint16_t FONT_12X16[] = {
   0x0000,  
   0x0000,  
 };
-
-#endif //CONSOLE_FONT_H
