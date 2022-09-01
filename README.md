@@ -1,6 +1,8 @@
 ## i686 OS
 An operating system for the i686 architecture, developed from scratch. Use a cross-compiler for the target architecture to build the code. Instructions on how to obtain one can be found in the `Toolchain` directory. The builds have only been done on Linux so far. Whether everything can be done smoothly under Windows as well, I don't know. It may be doable, but don't count on it.
 
+Note that the default branch of this repository is `develop`. ~~Switch to `main` if you're looking for a more stable version.~~
+
 ## Getting started
 As soon as you have the toolchain on your computer, you are ready for the build. 
 
