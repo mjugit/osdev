@@ -10,11 +10,10 @@
 #include <stdint.h>
 
 #include "include/vga.h"
+#include "include/string.h"
 
 
 void kernel_main(void) {
-  char *str = "This is just a simple test.\0";
-
-  for (int i = 0; str[i]; i++)
-    putc(10 + i * 12, 10, str[i], 0xffffff);
+  putstring(5, 2, "Works!\0");
+  refresh();
 }
