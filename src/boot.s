@@ -8,10 +8,10 @@
 	.set FLAGS, ALIGN_ON_PAGE_BOUNDARIES | INCLUDE_MEMORY_INFO | ENABLE_GRAPHICS
 	.set CHECKSUM, -(MAGIC + FLAGS)
 
-	.set MODE_TYPE, 0    // 0 = Linear graphics mode
-	.set WIDTH,     640
-	.set HEIGHT,    480
-	.set DEPTH,     32
+	.set MODE_TYPE, 1    // 0 = Linear graphics mode, 1 = EGA text mode
+	.set WIDTH,     80
+	.set HEIGHT,    25
+	.set DEPTH,     0
 
 
 	// Multiboot header
