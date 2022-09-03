@@ -38,4 +38,7 @@ void putstring(size_t posx, size_t posy, const char *str) {
     putchar(posx + charx, posy, str[charx]);
 }
 
-
+void clear(void) {
+  uint16_t bg = 0;
+  memset16(_screen, bg, sizeof(_screen));
+}

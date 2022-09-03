@@ -15,5 +15,6 @@
 
 void kernel_main(void) {
   putstring(5, 2, "Works!\0");
+  clear();
   refresh();
 }

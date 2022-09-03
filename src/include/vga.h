@@ -25,6 +25,7 @@
 extern void putchar(size_t posx, size_t posy, char ch);
 extern void refresh(void);
 extern void putstring(size_t posx, size_t posy, const char *str);
+extern void clear(void);
 
 
 /* extern const uint16_t FONT_12x16[]; */
