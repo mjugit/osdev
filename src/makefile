@@ -4,14 +4,20 @@
 # $ introducing the variable must be masked as $$.
 
 # Assembler options
-AS = $$HOME/tools/crc/bin/i686-elf-as
+#   Get by absolute path
+# AS = $$HOME/tools/crc/bin/i686-elf-as
+#   or - if you have it in your PATH -
+AS = i686-elf-as
 
 # C compiler options
-CC = $$HOME/tools/crc/bin/i686-elf-gcc
+#   Get by absolute path
+# CC = $$HOME/tools/crc/bin/i686-elf-gcc
+#   or - if you have it in your PATH -
+CC = i686-elf-gcc
+
 CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra
 # Linker options
 LFLAGS = -ffreestanding -O2 -nostdlib
-LLIBS = -lgcc
 
 # Output directories
 BUILD_DIR = ../build
@@ -19,10 +25,10 @@ LIBC_OBJ_DIR = $(BUILD_DIR)/libc
 LIBK_OBJ_DIR = $(BUILD_DIR)/libk
 BOOT_OBJ_DIR = $(BUILD_DIR)/boot
 ISO_DIR = $(BUILD_DIR)/iso
+KERNEL_DIR = $(BUILD_DIR)
 
-# Output filenames
 ISO = release.iso
-KERNEL = kernel.bin
+KERNEL = $(KERNEL_DIR)/kernel.bin
 
 # Object files
 
@@ -35,9 +41,7 @@ LIBK_OBJ = \
 BOOT_OBJ = \
 	$(BOOT_OBJ_DIR)/boot.o
 
-KERNEL_IMG = $(BUILD_DIR)/kmain.o
-
-
+KERNEL_OBJ = $(LIBK_OBJ_DIR)/kmain.o
 
 .PHONY: iso
 iso: kernel | $(ISO_DIR)
@@ -46,16 +50,21 @@ iso: kernel | $(ISO_DIR)
 $(ISO_DIR):
 	mkdir -p $(ISO_DIR)/boot/grub
 	cp boot/grub.cfg $(ISO_DIR)/boot/grub/grub.cfg
-	cp $(BUILD_DIR)/$(KERNEL) $(ISODIR)/boot/$(KERNEL)
+	cp $(KERNEL) $(ISO_DIR)/boot/kernel.bin
 
 .PHONY: kernel
-kernel: libc libk boot
-	$(CC) -c kmain.c -o $(KERNEL_IMG) $(CFLAGS)
-	$(CC) -T linker.ld -o $(BUILD_DIR)/$(KERNEL) $(LFLAGS) $(LLIBS)\
-		$(BOOT_OBJ) \
-		$(LIBC_OBJ) \
-		$(LIBK_OBJ) \
-		$(KERNEL_IMG)
+kernel: libk kmain.c boot | $(KERNEL_DIR)
+	$(CC) -c kmain.c -o $(KERNEL_OBJ) $(CFLAGS)
+	$(CC) -T linker.ld -o $(KERNEL) $(LFLAGS) \
+		$(KERNEL_OBJ) \
+		$(wildcard $(BOOT_OBJ_DIR)/*) \
+		$(wildcard $(LIBC_OBJ_DIR)/*) \
+		$(wildcard $(LIBK_OBJ_DIR)/*) \
+		-lgcc
+
+
+$(KERNEL_DIR):
+	mkdir -p $(KERNEL_DIR)
 
 .PHONY: clean
 clean:
@@ -66,7 +75,7 @@ clean:
 .PHONY: libc
 libc: $(LIBC_OBJ)
 
-$(LIBC_OBJ_DIR)/%.o: $(wildcard libc/*.c) | $(LIBC_OBJ_DIR)
+$(LIBC_OBJ_DIR)/%.o: libc/%.c | $(LIBC_OBJ_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 $(LIBC_OBJ_DIR):
@@ -76,9 +85,9 @@ $(LIBC_OBJ_DIR):
 # Rules for libk
 
 .PHONY: libk
-libk: $(LIBK_OBJ)
+libk: libc $(LIBK_OBJ)
 
-$(LIBK_OBJ_DIR)/%.o: $(wildcard libk/*.c) | $(LIBK_OBJ_DIR)
+$(LIBK_OBJ_DIR)/%.o: libk/%.c | $(LIBK_OBJ_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 $(LIBK_OBJ_DIR):
@@ -90,7 +99,7 @@ $(LIBK_OBJ_DIR):
 .PHONY: boot
 boot: $(BOOT_OBJ_DIR)/boot.o
 
-$(BOOT_OBJ_DIR)/%.o: $(wildcard boot/*.s) | $(BOOT_OBJ_DIR)
+$(BOOT_OBJ_DIR)/%.o: boot/%.s | $(BOOT_OBJ_DIR)
 	$(AS) $< -o $@
 
 $(BOOT_OBJ_DIR):

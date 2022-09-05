@@ -1,8 +1,8 @@
-#ifndef __FONT_H__
-#define __FONT_H__
+#ifndef FONT_H
+#define FONT_H
 
 #include <stdint.h>
 
 extern const uint16_t FONT_12x16[];
 
-#endif //__FONT_H__
+#endif // FONT_H

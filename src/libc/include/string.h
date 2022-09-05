@@ -1,5 +1,5 @@
-#ifndef __STRING_H__
-#  define __STRING_H__
+#ifndef STRING_H
+#  define STRING_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -13,4 +13,4 @@ extern void* memset32(uint32_t *dest, uint32_t src, size_t count);
 extern void* memset64(uint64_t *dest, uint64_t src, size_t count);
 
 
-#endif
+#endif // STRING_H

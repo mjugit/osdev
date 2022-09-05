@@ -1,8 +1,8 @@
-#ifndef __VGA_H__
-#  define __VGA_H__
+#ifndef VGA_H
+#  define VGA_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #include "../../libc/include/string.h"
 
@@ -19,4 +19,4 @@ extern void refresh(void);
 extern void putstring(size_t posx, size_t posy, const char *str);
 extern void clear(void);
 
-#endif
+#endif // VGA_H
