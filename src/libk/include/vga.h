@@ -1,18 +1,10 @@
-#ifndef __VGA_H__
-#  define __VGA_H__
+#ifndef VGA_H
+#  define VGA_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-#include "string.h"
-#include "font.h"
-
-
-// Framebuffer location
-/* #define FBUFF 0xa0000 */
-// Screen resolution
-/* #define RESX 640 */
-/* #define RESY 480 */
+#include "../../libc/include/string.h"
 
 #define TBUFF 0xb8000
 #define CHARS 80
@@ -25,12 +17,6 @@
 extern void putchar(size_t posx, size_t posy, char ch);
 extern void refresh(void);
 extern void putstring(size_t posx, size_t posy, const char *str);
+extern void clear(void);
 
-
-/* extern const uint16_t FONT_12x16[]; */
-
-/* typedef uint32_t color_t; */
-/* extern void putc(size_t posx, size_t posy, char ch, color_t color); */
-
-
-#endif
+#endif // VGA_H

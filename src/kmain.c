@@ -9,11 +9,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "include/vga.h"
-#include "include/string.h"
+#include "libc/include/string.h"
+#include "libk/include/vga.h"
 
-
-void kernel_main(void) {
-  putstring(5, 2, "Works!\0");
+void kmain(void) {
+  putstring(5, 2, "Hello, world!\0");
   refresh();
 }
