@@ -13,6 +13,17 @@
 #include "libk/include/vga.h"
 
 void kmain(void) {
-  putstring(5, 2, "Hello, world!\0");
-  refresh();
+  tui_initialize();
+
+  for (size_t i = 0; i < 10; i++) {
+    char *nextstr = ((i % 2) == 1)
+      ? "<<<<< String 1"
+      : ">>>>> String 2";
+      
+    for (size_t j = 0; j < 3; j++) {
+      tui_writeline(nextstr);
+    }
+  }
+  
+  tui_refresh();
 }
