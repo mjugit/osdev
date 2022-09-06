@@ -38,6 +38,9 @@ void tui_writeline(const char *str) {
   tui_write(str);
   _cursor_x = 0;
   _cursor_y++;
+
+  if (_cursor_y > TUI_ROWS)
+    tui_scrollup();
 }
 
 void tui_refresh(void) {

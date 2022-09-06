@@ -15,9 +15,15 @@
 void kmain(void) {
   tui_initialize();
 
-  tui_writeline("1 Hello, world!\0");
-  tui_writeline("2 Second line!\0");
-  tui_writeline("3 Hello, third line!\0");
-  tui_scrollup();
+  for (size_t i = 0; i < 10; i++) {
+    char *nextstr = ((i % 2) == 1)
+      ? "<<<<< String 1"
+      : ">>>>> String 2";
+      
+    for (size_t j = 0; j < 3; j++) {
+      tui_writeline(nextstr);
+    }
+  }
+  
   tui_refresh();
 }
