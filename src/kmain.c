@@ -13,6 +13,7 @@
 #include "libk/include/vga.h"
 
 void kmain(void) {
-  putstring(5, 2, "Hello, world!\0");
-  refresh();
+  tui_initialize();
+  tui_writeline("Hello, world!\0");
+  tui_refresh();
 }

@@ -1,21 +1,42 @@
 #include "include/vga.h"
 
-static uint16_t _screen[80 * 25];
+static size_t _cursor_x;
+static size_t _cursor_y;
 
-void putchar(size_t posx, size_t posy, char ch) {
-  _screen[posx + posy * CHARS] = vgachar(ch, 7);
+// Attributes for the next char
+static vga_attribute _attributes;
+
+// Backbuffer for double buffering
+static vga_char _backbuffer[TUI_CELLS * TUI_ROWS];
+
+
+void tui_initialize(void) {
+  _cursor_x = 0;
+  _cursor_y = 0;
+
+  _attributes = vgacolor(VGA_LIGHT_GREY, VGA_BLACK);
 }
 
-void refresh(void) {
-  memcpy((void*)TBUFF, _screen, sizeof(_screen));
+
+void tui_putch(char ch) {
+  size_t cell_index = _cursor_y * TUI_CELLS + _cursor_x;
+  _backbuffer[cell_index] = vgachar(ch, _attributes);
+
+  if (++_cursor_x == TUI_CELLS) {
+    _cursor_x = 0;
+    _cursor_y++;
+  }
 }
 
-void putstring(size_t posx, size_t posy, const char *str) {
-  for (size_t charx = 0; str[charx]; charx++)
-    putchar(posx + charx, posy, str[charx]);
+
+void tui_writeline(const char *str) {
+  while (*str)
+    tui_putch(*str++);
+
+  _cursor_x = 0;
+  _cursor_y++;
 }
 
-void clear(void) {
-  uint16_t bg = 0;
-  memset16(_screen, bg, sizeof(_screen));
+void tui_refresh(void) {
+  memcpy((void*)FRONTBUFFER_ADDR, _backbuffer, sizeof(_backbuffer));
 }
