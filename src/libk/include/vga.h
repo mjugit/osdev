@@ -13,6 +13,10 @@
 #define TUI_CELLS 80
 #define TUI_ROWS 25
 
+#define vgacolor(fg, bg) ((fg) | ((bg) << 4))
+#define vgachar(ch, color) ((ch) | ((color) << 8))
+
+
 typedef uint8_t vga_attribute;
 typedef uint16_t vga_char;
 
@@ -37,13 +41,12 @@ enum vga_color {
   VGA_WHITE = 15,
 };
 
-#define vgacolor(fg, bg) ((fg) | ((bg) << 4))
-#define vgachar(ch, color) ((ch) | ((color) << 8))
-#define cursor(start, posx, posy) ((uint16_t*)((start) + ((posx) * CHARS * 2) + ((posx) * 2)))
-
 extern void tui_initialize(void);
 extern void tui_putch(char ch);
+extern void tui_write(const char *str);
 extern void tui_writeline(const char *str);
 extern void tui_refresh(void);
+extern void tui_clear(void);
+extern void tui_scrollup(void);
 
 #endif // VGA_H

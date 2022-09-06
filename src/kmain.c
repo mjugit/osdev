@@ -14,6 +14,10 @@
 
 void kmain(void) {
   tui_initialize();
-  tui_writeline("Hello, world!\0");
+
+  tui_writeline("1 Hello, world!\0");
+  tui_writeline("2 Second line!\0");
+  tui_writeline("3 Hello, third line!\0");
+  tui_scrollup();
   tui_refresh();
 }
