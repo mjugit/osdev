@@ -87,6 +87,21 @@ static size_t _hex_to_string(char *buffer, size_t position, uint64_t value) {
   return size + 1;
 }
 
+static size_t _uint_to_string(char *buffer, int position, uint64_t value) {
+  char replacement_buffer[25];
+  char symbols[10] = "0123456789";
+  size_t size = 0;
+
+  do {
+    replacement_buffer[size++] = symbols[value % 10];
+    value /= 10;
+  } while (value != 0);
+
+  for (int buff_index = size - 1; buff_index >= 0; buff_index--)
+    buffer[position++] = replacement_buffer[buff_index];
+
+  return size + 1;
+}
 
 void tui_printf(char *format, ...) {
   char textbuffer[1024];
@@ -105,6 +120,11 @@ void tui_printf(char *format, ...) {
 	buffer_size += _hex_to_string(textbuffer, buffer_size, (uint64_t)replacement_buffer);
 	break;
 
+      case 'u':
+	replacement_buffer = va_arg(args, uint64_t);
+	buffer_size += _uint_to_string(textbuffer, buffer_size, (uint64_t)replacement_buffer);
+	break;
+	
       default:
 	textbuffer[buffer_size++] = '%';
 	break;

@@ -15,6 +15,9 @@
 void kmain(void) {
   tui_initialize();
 
-  tui_printf("value: %x", 0xabcdef12345);
+  uint64_t value = 0x12345abcdef;
+  tui_printf("As hex: %x", value);
+  tui_writeline("");
+  tui_printf("As uint: %u", value);
   tui_refresh();
 }
