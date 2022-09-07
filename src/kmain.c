@@ -15,15 +15,6 @@
 void kmain(void) {
   tui_initialize();
 
-  for (size_t i = 0; i < 10; i++) {
-    char *nextstr = ((i % 2) == 1)
-      ? "<<<<< String 1"
-      : ">>>>> String 2";
-      
-    for (size_t j = 0; j < 3; j++) {
-      tui_writeline(nextstr);
-    }
-  }
-  
+  tui_printf("value: %x", 0xabcdef12345);
   tui_refresh();
 }

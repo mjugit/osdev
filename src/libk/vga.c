@@ -26,6 +26,9 @@ void tui_putch(char ch) {
     _cursor_x = 0;
     _cursor_y++;
   }
+
+  if (_cursor_y > TUI_ROWS)
+    tui_scrollup();
 }
 
 void tui_write(const char *str) {
@@ -37,9 +40,8 @@ void tui_writeline(const char *str) {
   _cursor_x = 0;
   tui_write(str);
   _cursor_x = 0;
-  _cursor_y++;
 
-  if (_cursor_y > TUI_ROWS)
+  if (++_cursor_y > TUI_ROWS)
     tui_scrollup();
 }
 
@@ -63,4 +65,57 @@ void tui_scrollup(void) {
   memcpy(_backbuffer, secondrow, bytes_to_move);
   _cursor_x = 0;
   _cursor_y = TUI_ROWS;
+}
+
+
+static size_t _hex_to_string(char *buffer, size_t position, uint64_t value) {
+  char replacement_buffer[25];
+  char symbols[16] = "0123456789abcdef";
+  size_t size = 0;
+
+  do {
+    replacement_buffer[size++] = symbols[value % 16];
+    value /= 16;
+  } while (value != 0);
+
+  replacement_buffer[size++] = 'x';
+  replacement_buffer[size++] = '0';
+  
+  for (int buff_index = size - 1; buff_index >= 0; buff_index--)
+    buffer[position++] = replacement_buffer[buff_index];
+
+  return size + 1;
+}
+
+
+void tui_printf(char *format, ...) {
+  char textbuffer[1024];
+  size_t buffer_size = 0;
+  uint64_t replacement_buffer = 0;
+
+  va_list args;
+  va_start(args, format);
+
+  for (size_t format_index = 0; format[format_index]; format_index++) {
+    if (format[format_index] == '%') {
+
+      switch (format[++format_index]) {
+      case 'x':
+	replacement_buffer = va_arg(args, uint64_t);
+	buffer_size += _hex_to_string(textbuffer, buffer_size, (uint64_t)replacement_buffer);
+	break;
+
+      default:
+	textbuffer[buffer_size++] = '%';
+	break;
+      }
+      
+    } else {
+      textbuffer[buffer_size++] = format[format_index];
+    }
+  }  
+  va_end(args);
+
+  textbuffer[++buffer_size] = '\0';
+  tui_write(textbuffer);
 }
