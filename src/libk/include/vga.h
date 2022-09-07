@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdarg.h>
 
 #include "../../libc/include/string.h"
 
@@ -48,5 +49,6 @@ extern void tui_writeline(const char *str);
 extern void tui_refresh(void);
 extern void tui_clear(void);
 extern void tui_scrollup(void);
+extern void tui_printf(char *fromat, ...);
 
 #endif // VGA_H

@@ -15,15 +15,9 @@
 void kmain(void) {
   tui_initialize();
 
-  for (size_t i = 0; i < 10; i++) {
-    char *nextstr = ((i % 2) == 1)
-      ? "<<<<< String 1"
-      : ">>>>> String 2";
-      
-    for (size_t j = 0; j < 3; j++) {
-      tui_writeline(nextstr);
-    }
-  }
-  
+  uint64_t value = 0x12345abcdef;
+  tui_printf("As hex: %x", value);
+  tui_writeline("");
+  tui_printf("As uint: %u", value);
   tui_refresh();
 }
