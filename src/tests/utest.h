@@ -5,8 +5,8 @@
 #include <stdio.h>
 
 // Maximum length of last message
-#define MSG_BUFF_SIZE 1024
-static char msgbuff[MSG_BUFF_SIZE];
+#define MSGBUFF_SIZE 1024
+static char msgbuff[MSGBUFF_SIZE];
 
 
 static int _total_tests = 0;
@@ -75,12 +75,12 @@ static void (*_teardownfunc)(void) = NULL;
 #define assert_that(expression) _safeblock(\
     _total_assertions_evaluated++;\
     if (!(expression)) {\
-	snprintf(msgbuff, MSG_BUFF_SIZE, "[FAILED] %s\n\t %s, line %d: (%s)",\
+	snprintf(msgbuff, MSGBUFF_SIZE, "[FAILED] %s\n\t %s, line %d: (%s)",\
 	     __func__, __FILE__, __LINE__, #expression);\
 	_test_status = 1;\
 	return;\
     } else {\
-        printf("[PASSED] %s",  __func__);\
+        printf("[PASSED] %s\n",  __func__);\
     }\
 )
 
