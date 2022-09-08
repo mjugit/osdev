@@ -19,19 +19,19 @@ static void (*_setupfunc)(void) = NULL;
 static void (*_teardownfunc)(void) = NULL;
 
 
-#define utest(name) static void name(void)
+#define test(name) static void name(void)
 #define testfixture(name) static void name(void)
 
 #define _safeblock(block) do {\
       block;\
     } while (0);
 
-
 #define runfixture(name) _safeblock(\
     name();\
     _setupfunc = NULL;\
     _teardownfunc = NULL;\
 )
+
 
 #define beforetest(setup) _safeblock(\
     _setupfunc = setup;\
