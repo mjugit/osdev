@@ -1,18 +1,31 @@
 # Source arangement
-The source code is organized thematically. Inside the libc folder no code should end up that is only interesting for the kernel. Conversely, generally useful things should not be available exclusively to the kernel.
+This directory contains the complete code of the operating system. The following tree provides a more detailed overview.
 
 ```
-├── boot         // things related to the early boot stage
-├── libc         // libc implementation
-├── libk         // kernel library
-├── linker.ld    // linker script
-├── kmain.c      // kernel entry code
-├── makefile     // build configuration
-└── README.md
+├── boot              ← things related to the early boot stage
+│   ├── boot.s
+│   └── grub.cfg      ← GRUB configuration
+├── kmain.c
+├── libc              ← c library
+│   ├── include
+│   │   └── *.h
+│   └── *.c
+├── libk              ← kernel library
+│   ├── include
+│   │   └── *.h
+│   └── *.c
+├── linker.ld         ← linker script
+├── makefile          ← build configuration
+├── README.md
+└── testing           ← unit tests
+    ├── example.c
+    └── include
+        └── utest.h   ← testing library
 ```
 
-Before you try to start the build, make sure the variables in the `makefile` are set correcty. Also pay attention to the comments:
-```makefile
+Before you try to start the build, make sure the variables in the `makefile` are set correcty. Read the comments, as they provide valuable information of what you can do. For example:
+```
+...
 # Assembler options
 #   Get by absolute path
 # AS = $$HOME/tools/crc/bin/i686-elf-as
