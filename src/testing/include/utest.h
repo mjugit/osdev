@@ -79,4 +79,10 @@ static void (*_teardownfn)(void) = NULL;
     }\
 )
 
+#define fail() _safe(\
+    snprintf(_msgbuff, MSGBUFF_LEN, "\t%s, l%d: (%s)",\
+	     __FILE__, __LINE__, "fail");\
+    _state = TEST_FAILURE;\
+)
+
 #endif // UTEST_H
