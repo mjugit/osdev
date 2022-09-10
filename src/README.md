@@ -1,5 +1,5 @@
 # Source arangement
-This directory contains the complete code of the operating system. The following tree provides a more detailed overview.
+This directory contains the complete code of the operating system. The following tree provides a detailed overview.
 
 ```
 ├── boot              ← things related to the early boot stage
