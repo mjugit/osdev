@@ -1,141 +1,40 @@
 #include "include/vga.h"
 
-static size_t _cursor_x;
-static size_t _cursor_y;
+static vga_config _config;
+static uint8_t _defaultattr;
+static size_t _cursorx, _cursory;
 
-// Attributes for the next char
-static vga_attribute _attributes;
+vga_config vga_initialize(uint16_t *frontbuff_ptr, uint16_t *backbuff_ptr, size_t cols, size_t rows) {
+  _config = (vga_config) {
+    .frontbuff = frontbuff_ptr,
+    .backbuff = backbuff_ptr,
+    .sizex = cols,
+    .sizey = rows
+  };
 
-// Backbuffer for double buffering
-static vga_char _backbuffer[TUI_CELLS * TUI_ROWS];
-
-
-void tui_initialize(void) {
-  _cursor_x = 0;
-  _cursor_y = 0;
-
-  _attributes = vgacolor(VGA_LIGHT_GREY, VGA_BLACK);
+  return _config;
 }
 
+uint16_t *vga_reset(void) {
+  kmemset16(_config.backbuff, 0x00, _config.sizex * _config.sizey);
+  _cursorx = _cursory = 0;
 
-void tui_putch(char ch) {
-  size_t cell_index = _cursor_y * TUI_CELLS + _cursor_x;
-  _backbuffer[cell_index] = vgachar(ch, _attributes);
-
-  if (++_cursor_x == TUI_CELLS) {
-    _cursor_x = 0;
-    _cursor_y++;
-  }
-
-  if (_cursor_y > TUI_ROWS)
-    tui_scrollup();
+  return 0; //vga_tell();
 }
 
-void tui_write(const char *str) {
-  while (*str)
-    tui_putch(*str++);
+uint8_t vga_setattr(uint8_t attr) {
+  _defaultattr = attr;
+
+  return _defaultattr;
 }
 
-void tui_writeline(const char *str) {
-  _cursor_x = 0;
-  tui_write(str);
-  _cursor_x = 0;
-
-  if (++_cursor_y > TUI_ROWS)
-    tui_scrollup();
+uint16_t *vga_tell(void) {
+  return &(_config.backbuff[_cursory * _config.sizex + _cursorx]);
 }
 
-void tui_refresh(void) {
-  memcpy((void*)FRONTBUFFER_ADDR, _backbuffer, sizeof(_backbuffer));
-}
+uint16_t *vga_putch(const char ch) {
+  uint16_t *cursor = vga_tell();
+  *cursor = vga_ch(ch, 0);
 
-void tui_clear(void) {
-  vga_char background = vgachar(' ', _attributes);
-  memset16(_backbuffer, background, TUI_CELLS * TUI_ROWS);
-  _cursor_x = 0;
-  _cursor_y = 0;
-  
-  tui_refresh();
-}
-
-void tui_scrollup(void) {
-  vga_char *secondrow = _backbuffer + TUI_CELLS;
-  size_t bytes_to_move = sizeof(_backbuffer) - TUI_CELLS * sizeof(vga_char);
-  
-  memcpy(_backbuffer, secondrow, bytes_to_move);
-  _cursor_x = 0;
-  _cursor_y = TUI_ROWS;
-}
-
-
-static size_t _hex_to_string(char *buffer, size_t position, uint64_t value) {
-  char replacement_buffer[25];
-  char symbols[16] = "0123456789abcdef";
-  size_t size = 0;
-
-  do {
-    replacement_buffer[size++] = symbols[value % 16];
-    value /= 16;
-  } while (value != 0);
-
-  replacement_buffer[size++] = 'x';
-  replacement_buffer[size++] = '0';
-  
-  for (int buff_index = size - 1; buff_index >= 0; buff_index--)
-    buffer[position++] = replacement_buffer[buff_index];
-
-  return size + 1;
-}
-
-static size_t _uint_to_string(char *buffer, int position, uint64_t value) {
-  char replacement_buffer[25];
-  char symbols[10] = "0123456789";
-  size_t size = 0;
-
-  do {
-    replacement_buffer[size++] = symbols[value % 10];
-    value /= 10;
-  } while (value != 0);
-
-  for (int buff_index = size - 1; buff_index >= 0; buff_index--)
-    buffer[position++] = replacement_buffer[buff_index];
-
-  return size + 1;
-}
-
-void tui_printf(char *format, ...) {
-  char textbuffer[1024];
-  size_t buffer_size = 0;
-  uint64_t replacement_buffer = 0;
-
-  va_list args;
-  va_start(args, format);
-
-  for (size_t format_index = 0; format[format_index]; format_index++) {
-    if (format[format_index] == '%') {
-
-      switch (format[++format_index]) {
-      case 'x':
-	replacement_buffer = va_arg(args, uint64_t);
-	buffer_size += _hex_to_string(textbuffer, buffer_size, (uint64_t)replacement_buffer);
-	break;
-
-      case 'u':
-	replacement_buffer = va_arg(args, uint64_t);
-	buffer_size += _uint_to_string(textbuffer, buffer_size, (uint64_t)replacement_buffer);
-	break;
-	
-      default:
-	textbuffer[buffer_size++] = '%';
-	break;
-      }
-      
-    } else {
-      textbuffer[buffer_size++] = format[format_index];
-    }
-  }  
-  va_end(args);
-
-  textbuffer[++buffer_size] = '\0';
-  tui_write(textbuffer);
+  return vga_tell();
 }
