@@ -29,7 +29,7 @@ deftest(kmemcmp_always_compares_two_memory_areas) {
   fact(kmemcmp(area1, area1, sizeof area1) == 0);
 }
 
-deftest(kmemset8_sets_8bitpacket) {
+deftest(kmemset8_always_sets_8bitpacket) {
   const uint8_t onetime = 0xff;
   const uint32_t fourtimes = 0xffffffff;
 
@@ -39,7 +39,7 @@ deftest(kmemset8_sets_8bitpacket) {
   fact(testbuffer[4] == 0);
 }
 
-deftest(kmemset16_sets_16bitpacket) {
+deftest(kmemset16_always_sets_16bitpacket) {
   const uint16_t onetime = 0xffff;
   const uint64_t fourtimes = 0xffffffffffffffff;
 
@@ -49,7 +49,7 @@ deftest(kmemset16_sets_16bitpacket) {
   fact(testbuffer[8] == 0);
 }
 
-deftest(kmemset32_sets_32bitpacket) {
+deftest(kmemset32_always_sets_32bitpacket) {
   const uint32_t onetime = 0xffffffff;
   const uint64_t twotimes = 0xffffffffffffffff;
 
@@ -59,7 +59,7 @@ deftest(kmemset32_sets_32bitpacket) {
   fact(testbuffer[8] == 0);
 }
 
-deftest(kmemset64_sets_64bitpacket) {
+deftest(kmemset64_always_sets_64bitpacket) {
   const uint64_t onetime = 0xffffffffffffffff;
 
   kmemset64((uint64_t*)testbuffer, onetime, 2);
@@ -73,10 +73,10 @@ deftest(kmemset64_sets_64bitpacket) {
 deffixture(kmem_test) {
   runtest(kmemcpy_always_copies_src_to_dest);
   runtest(kmemcmp_always_compares_two_memory_areas);
-  runtest(kmemset8_sets_8bitpacket);
-  runtest(kmemset16_sets_16bitpacket);
-  runtest(kmemset32_sets_32bitpacket);
-  runtest(kmemset64_sets_64bitpacket);
+  runtest(kmemset8_always_sets_8bitpacket);
+  runtest(kmemset16_always_sets_16bitpacket);
+  runtest(kmemset32_always_sets_32bitpacket);
+  runtest(kmemset64_always_sets_64bitpacket);
 }
 
 
