@@ -46,20 +46,54 @@ typedef struct {
 } vga_config;
 
 
+/*
+ * vga_ch
+ * Combines a c char @ch and a set of vga attributes @attr to a vga char.
+ */
 #  define vga_ch(ch, attr) ((ch) | ((attr) << 8))
+
+/*
+ * vga_attr
+ * Combines a foreground color @fg, a background color @bg and the @blink bit.
+ */
 #  define vga_attr(fg, bg, blink) ((fg) | ((bg) << 4) | ((blink) << 7))
 
-extern vga_config vga_initialize(uint16_t *frontbuff_ptr,
+
+/*
+ * vga_configure
+ * Set the essential video options, that is the @frontbuff_ptr (location of
+ * the frontbuffer), the @backbuff_ptr (location of the backbuffer) and The
+ * amount of @cols and @rows (screen width and height). 
+ */
+extern vga_config vga_configure(uint16_t *frontbuff_ptr,
 				 uint16_t *backbuff_ptr,
 				 size_t cols,
 				 size_t rows);
 
+/*
+ * vga_reset
+ * Clears the screen and resets the cursor to 0/0.
+ */
 extern uint16_t *vga_reset(void);
 
+/*
+ * vga_setattr
+ * Sets the default vga attributes to @attr. New haracters will inherit this
+ * attributes.
+ */
 extern uint8_t vga_setattr(uint8_t attr);
 
+/*
+ * vga_tell
+ * Returns a pointer to the cursor location in the backbuffer.
+ */
 extern uint16_t *vga_tell(void);
 
+/*
+ * vga_putch
+ * Writes @ch to the screen at the current cursor location using the default
+ * attributes.
+ */
 extern uint16_t *vga_putch(const char ch);
 
 #endif
