@@ -36,7 +36,8 @@ LIBC_OBJ = \
 	$(LIBC_OBJ_DIR)/string.o
 
 LIBK_OBJ = \
-	$(LIBK_OBJ_DIR)/vga.o
+	$(LIBK_OBJ_DIR)/vga.o\
+	$(LIBK_OBJ_DIR)/kmem.o
 
 BOOT_OBJ = \
 	$(BOOT_OBJ_DIR)/boot.o

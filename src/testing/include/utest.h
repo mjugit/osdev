@@ -13,7 +13,6 @@ static char _msgbuff[MSGBUFF_LEN];
 
 static unsigned int _ntests;
 static unsigned int _npassed;
-static unsigned int _nasserts;
 static unsigned int _nfailures;
 static unsigned int _state;
 
@@ -27,7 +26,6 @@ static void (*_teardownfn)(void) = NULL;
 #define report() _safe(\
     printf("\nReport:\n");\
     printf("  %8d %s\n", _ntests, "tests total");\
-    printf("  %8d %s\n", _nasserts, "assertions evaluated");\
     printf("  %8d %s\n", _npassed, "passed");\
     printf("  %8d %s\n", _nfailures, "failed");\
 )
@@ -68,15 +66,20 @@ static void (*_teardownfn)(void) = NULL;
 #define runfixture(name) _safe(name(); _setupfn = _teardownfn = NULL;)
 
 // Reset counters
-#define resetstats() _safe(_ntests = _npassed = _nasserts = _nfailures = 0;)
+#define resetstats() _safe(_ntests = _npassed = _nfailures = 0;)
 
 #define fact(expr) _safe(\
-    _nasserts++;\
     if (!(expr)) {\
 	snprintf(_msgbuff, MSGBUFF_LEN, "\t%s, l%d: (%s)",\
 		 __FILE__, __LINE__, #expr);\
 	_state = TEST_FAILURE;\
     }\
+)
+
+#define fail() _safe(\
+    snprintf(_msgbuff, MSGBUFF_LEN, "\t%s, l%d: (%s)",\
+	     __FILE__, __LINE__, "fail");\
+    _state = TEST_FAILURE;\
 )
 
 #endif // UTEST_H
