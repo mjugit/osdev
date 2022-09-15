@@ -61,7 +61,15 @@ uint16_t *vga_tell(void) {
  */
 uint16_t *vga_putch(const char ch) {
   uint16_t *cursor = vga_tell();
-  *cursor = vga_ch(ch, 0);
+  *cursor = vga_ch(ch, _defaultattr);
 
+  if (++_cursorx >= _config.sizex) {
+    ++_cursory;
+    _cursorx = 0;
+
+    if (_cursory >= _config.sizey)
+      _cursory = 0;
+  }
+  
   return vga_tell();
 }

@@ -54,9 +54,9 @@ typedef struct {
 
 /*
  * vga_attr
- * Combines a foreground color @fg, a background color @bg and the @blink bit.
+ * Combines a foreground color @fg and a background color @bg.
  */
-#  define vga_attr(fg, bg, blink) ((fg) | ((bg) << 4) | ((blink) << 7))
+#  define vga_attr(fg, bg) ((fg) | ((bg) << 4))
 
 
 /*
