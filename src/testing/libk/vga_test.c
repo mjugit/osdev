@@ -8,7 +8,7 @@
 static uint16_t backbuffer[COLS * ROWS];
 static uint16_t frontbuffer[COLS * ROWS];
 
-deftest(vga_configure_always_sets_video_options) {
+deftest(vga_configure__sets_video_options) {
   vga_config expected = {
     .frontbuff = frontbuffer,
     .backbuff = backbuffer,
@@ -24,7 +24,7 @@ deftest(vga_configure_always_sets_video_options) {
   fact(!kmemcmp(&expected, &actual, sizeof(vga_config)));
 }
 
-deftest(vga_reset_always_resets_backbuffer) {
+deftest(vga_reset__clears_backbuffer) {
   uint16_t expected[ROWS * COLS];
   kmemset16(expected, 0x00, ROWS * COLS);
   kmemset16(backbuffer, 0xff, ROWS * COLS);
@@ -35,7 +35,7 @@ deftest(vga_reset_always_resets_backbuffer) {
   fact(cursor_ptr == backbuffer);
 }
 
-deftest(vga_setattr_always_sets_default_attributes) {
+deftest(vga_setattr__sets_attr_of_next_chars) {
   uint8_t expected = 0xff;
 
   uint8_t actual = vga_setattr(expected);
@@ -43,7 +43,7 @@ deftest(vga_setattr_always_sets_default_attributes) {
   fact(actual == expected);
 }
 
-deftest(vga_putch_always_puts_char_and_moves_cursor) {
+deftest(vga_putch__puts_char_at_cursor) {
   uint16_t *startpos = vga_tell();
   uint8_t expected_attr = vga_attr(VGA_WHITE, VGA_BLACK);
   char expected_ch = 'x';
@@ -55,7 +55,7 @@ deftest(vga_putch_always_puts_char_and_moves_cursor) {
   fact(*startpos == vga_ch(expected_ch, expected_attr));
 }
 
-deftest(vga_putch_reaches_screenbounds_resets_cursor) {
+deftest(vga_putch__scrolls_if_screen_is_full) {
   vga_reset();
   size_t total_chars = COLS * ROWS;
 
@@ -67,7 +67,7 @@ deftest(vga_putch_reaches_screenbounds_resets_cursor) {
   fact (cursor_end == cursor_expected);
 }
 
-deftest(vga_setcursor_always_sets_cursor_to_coordinates) {
+deftest(vga_setcursor__moves_cursor) {
   vga_reset();
 
   int expectedx = 42;
@@ -84,7 +84,7 @@ deftest(vga_setcursor_always_sets_cursor_to_coordinates) {
   fact(actual == expected);
 }
 
-deftest(vga_refresh_always_synchronizes_frontbuffer_with_backbuffer) {
+deftest(vga_refresh__copies_backbuffer_to_frontbuffer) {
   vga_reset();
   
   for (size_t index = 0; index < ROWS * COLS; index++)
@@ -95,7 +95,7 @@ deftest(vga_refresh_always_synchronizes_frontbuffer_with_backbuffer) {
   fact(!kmemcmp(frontbuffer, backbuffer, sizeof(frontbuffer)));
 }
 
-deftest(vga_rotup_always_rotates_screen_and_sets_cursor_to_free_space) { 
+deftest(vga_rotup__scrolls_screen_up) { 
   uint16_t expectedempty[3 * COLS];
   kmemset16(expectedempty, 0, 3 * COLS);
   
@@ -111,7 +111,7 @@ deftest(vga_rotup_always_rotates_screen_and_sets_cursor_to_free_space) {
 }
 
 
-deftest(vga_print_always_prints_string_to_current_location) {
+deftest(vga_print__prints_null_terminated_string) {
   const char *dummystr = "Hello, world!\0";
   const uint8_t attr = vga_attr(VGA_WHITE, VGA_BLACK);
 
@@ -128,15 +128,15 @@ deftest(vga_print_always_prints_string_to_current_location) {
 }
 
 deffixture(vga_test) {
-  runtest(vga_configure_always_sets_video_options);
-  runtest(vga_reset_always_resets_backbuffer);
-  runtest(vga_setattr_always_sets_default_attributes);
-  runtest(vga_putch_always_puts_char_and_moves_cursor);
-  runtest(vga_putch_reaches_screenbounds_resets_cursor);
-  runtest(vga_setcursor_always_sets_cursor_to_coordinates);
-  runtest(vga_refresh_always_synchronizes_frontbuffer_with_backbuffer);
-  runtest(vga_rotup_always_rotates_screen_and_sets_cursor_to_free_space);
-  runtest(vga_print_always_prints_string_to_current_location);
+  runtest(vga_configure__sets_video_options);
+  runtest(vga_reset__clears_backbuffer);
+  runtest(vga_setattr__sets_attr_of_next_chars);
+  runtest(vga_putch__puts_char_at_cursor);
+  runtest(vga_putch__scrolls_if_screen_is_full);
+  runtest(vga_setcursor__moves_cursor);
+  runtest(vga_refresh__copies_backbuffer_to_frontbuffer);
+  runtest(vga_rotup__scrolls_screen_up);
+  runtest(vga_print__prints_null_terminated_string);
 }
 
 int main(void) {

@@ -4,7 +4,7 @@
 static uint8_t testbuffer[200];
 
 
-deftest(kmemcpy_always_copies_src_to_dest) {
+deftest(kmemcpy__copies_src_to_dest) {
   const uint8_t expected[] = {
     0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7,
     0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf
@@ -20,7 +20,7 @@ deftest(kmemcpy_always_copies_src_to_dest) {
   }
 }
 
-deftest(kmemcmp_always_compares_two_memory_areas) {
+deftest(kmemcmp__compares_to_mem_areas) {
   const uint8_t area1[] = { 0x1, 0x2, 0x3, 0x4, 0x5, 0xa, 0xb, 0xc, 0xd, 0xe };
   const uint8_t area2[] = { 0xa, 0xb, 0xc, 0xd, 0xe, 0x1, 0x2, 0x3, 0x4, 0x5 };
 
@@ -29,7 +29,7 @@ deftest(kmemcmp_always_compares_two_memory_areas) {
   fact(kmemcmp(area1, area1, sizeof area1) == 0);
 }
 
-deftest(kmemset8_always_sets_8bitpacket) {
+deftest(kmemset8__sets_8_bits) {
   const uint8_t onetime = 0xff;
   const uint32_t fourtimes = 0xffffffff;
 
@@ -39,7 +39,7 @@ deftest(kmemset8_always_sets_8bitpacket) {
   fact(testbuffer[4] == 0);
 }
 
-deftest(kmemset16_always_sets_16bitpacket) {
+deftest(kmemset16__sets_16_bits) {
   const uint16_t onetime = 0xffff;
   const uint64_t fourtimes = 0xffffffffffffffff;
 
@@ -49,7 +49,7 @@ deftest(kmemset16_always_sets_16bitpacket) {
   fact(testbuffer[8] == 0);
 }
 
-deftest(kmemset32_always_sets_32bitpacket) {
+deftest(kmemset32__sets_32_bits) {
   const uint32_t onetime = 0xffffffff;
   const uint64_t twotimes = 0xffffffffffffffff;
 
@@ -59,7 +59,7 @@ deftest(kmemset32_always_sets_32bitpacket) {
   fact(testbuffer[8] == 0);
 }
 
-deftest(kmemset64_always_sets_64bitpacket) {
+deftest(kmemset64__sets_64_bits) {
   const uint64_t onetime = 0xffffffffffffffff;
 
   kmemset64((uint64_t*)testbuffer, onetime, 2);
@@ -71,12 +71,12 @@ deftest(kmemset64_always_sets_64bitpacket) {
 
 
 deffixture(kmem_test) {
-  runtest(kmemcpy_always_copies_src_to_dest);
-  runtest(kmemcmp_always_compares_two_memory_areas);
-  runtest(kmemset8_always_sets_8bitpacket);
-  runtest(kmemset16_always_sets_16bitpacket);
-  runtest(kmemset32_always_sets_32bitpacket);
-  runtest(kmemset64_always_sets_64bitpacket);
+  runtest(kmemcpy__copies_src_to_dest);
+  runtest(kmemcmp__compares_to_mem_areas);
+  runtest(kmemset8__sets_8_bits);
+  runtest(kmemset16__sets_16_bits);
+  runtest(kmemset32__sets_32_bits);
+  runtest(kmemset64__sets_64_bits);
 }
 
 
