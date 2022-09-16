@@ -5,6 +5,8 @@
 
 #  include "kmem.h"
 
+#include "../../libc/include/string.h"
+
 /* 
  * VGA constants
  * Notice: The screen resoution is not configured here. These are only
@@ -12,8 +14,7 @@
  */
 #  define VGA_COLS 80
 #  define VGA_ROWS 25
-#  define FRONTBUFF 0xb8000
-
+#  define VGA_FRONTBUFF 0xb8000
 /*
  * The amount of background colors is limited, since there are only 3
  * bits to store it. The fourth bit indicates whether to blink. Using
