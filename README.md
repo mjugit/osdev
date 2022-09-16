@@ -8,7 +8,7 @@ This is not a professionally developed operating system, but more of a hobby pro
 
 ## Getting started
 
-What you can download here is only source code, but the compilation is fully automated. Afterwards, a bootable `*.iso` file will be created under `build`.  
+What you can download here is only source code, but the compilation is fully automated. Afterwards, a bootable `*.iso` file will be created under `build`. If you want to write code youself, it is worth looking into the header files, as functions and their parameters are documented there. Also, we have a own unit testing 'framework', consisting of the single header `src/testing/include/utest.h`. As always, the unit tests provide many practical examples and describe the exact behaviour of each function. You can find them under `src/testing/` (all files containing unit tests are named like `*_test.c`). Their build is also automated. Just run `make` inside the `src/testing` to get started.
 
 ### Prerequisites
 
