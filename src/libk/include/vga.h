@@ -115,11 +115,21 @@ extern uint16_t *vga_setcursor(size_t col, size_t row);
  */
 extern uint16_t *vga_refresh(void);
 
-/* vga_rotup
+/*
+ * vga_rotup
  * Rotates the backbuffer @nrows up, clearing @nrows at the bottom. It
  * also sets the cursor to the top of the freed space and returns its
  * new location.
  */
 extern uint16_t *vga_rotup(size_t nrows);
+
+/*
+ * vga_print
+ * Prints the \0 terminated string @str to the screen, beginning at
+ * the current cursor location. All chars will be configured with the
+ * default attributes.
+ */
+extern uint16_t *vga_print(const char *str);
+
 
 #endif

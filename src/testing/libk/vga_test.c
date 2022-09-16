@@ -56,17 +56,15 @@ deftest(vga_putch_always_puts_char_and_moves_cursor) {
 }
 
 deftest(vga_putch_reaches_screenbounds_resets_cursor) {
+  vga_reset();
   size_t total_chars = COLS * ROWS;
-
-  uint16_t *cursor_start = vga_reset();
-  fact(cursor_start == backbuffer);
 
   for (size_t index = 0; index < total_chars; index++)
     vga_putch('.');
 
   uint16_t *cursor_end = vga_tell();
-  fact (cursor_end == cursor_start)
-  
+  uint16_t *cursor_expected = vga_setcursor(0, ROWS - 1);
+  fact (cursor_end == cursor_expected);
 }
 
 deftest(vga_setcursor_always_sets_cursor_to_coordinates) {
@@ -109,8 +107,25 @@ deftest(vga_rotup_always_rotates_screen_and_sets_cursor_to_free_space) {
   
   fact(!kmemcmp(expectedempty, freearea, sizeof(expectedempty)));
   fact(!kmemcmp(backbuffer, &frontbuffer[rowsup * COLS], ((ROWS - rowsup) * COLS * sizeof(uint16_t))));
+  fact(freearea == vga_tell());
 }
 
+
+deftest(vga_print_always_prints_string_to_current_location) {
+  const char *dummystr = "Hello, world!\0";
+  const uint8_t attr = vga_attr(VGA_WHITE, VGA_BLACK);
+
+  uint16_t expected[sizeof(dummystr) * sizeof(uint16_t)];
+
+  for (size_t strindex = 0; dummystr[strindex]; strindex++)
+    expected[strindex] = vga_ch(dummystr[strindex], attr);
+  
+  vga_reset();
+
+  vga_print(dummystr);
+
+  fact(!kmemcmp(backbuffer, expected, sizeof(expected)));
+}
 
 deffixture(vga_test) {
   runtest(vga_configure_always_sets_video_options);
@@ -121,6 +136,7 @@ deffixture(vga_test) {
   runtest(vga_setcursor_always_sets_cursor_to_coordinates);
   runtest(vga_refresh_always_synchronizes_frontbuffer_with_backbuffer);
   runtest(vga_rotup_always_rotates_screen_and_sets_cursor_to_free_space);
+  runtest(vga_print_always_prints_string_to_current_location);
 }
 
 int main(void) {

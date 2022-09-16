@@ -68,7 +68,7 @@ uint16_t *vga_putch(const char ch) {
     _cursorx = 0;
 
     if (_cursory >= _config.sizey)
-      _cursory = 0;
+      vga_rotup(1);
   }
   
   return vga_tell();
@@ -112,6 +112,21 @@ uint16_t *vga_rotup(size_t nrows) {
 
   uint16_t *areaend = vga_setcursor(0, _config.sizey - nrows);
   kmemset16(areaend, 0, _config.sizex * nrows);
+
+  vga_setcursor(0, _config.sizey - nrows);
   
+  return vga_tell();
+}
+
+/*
+ * vga_print
+ * Prints the \0 terminated string @str to the screen, beginning at
+ * the current cursor location. All chars will be configured with the
+ * default attributes.
+ */
+uint16_t *vga_print(const char *str) {
+  while (*str)
+    vga_putch(*str++);
+
   return vga_tell();
 }
