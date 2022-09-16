@@ -73,3 +73,45 @@ uint16_t *vga_putch(const char ch) {
   
   return vga_tell();
 }
+
+/*
+ * vga_setcursor
+ * Sets the cursor to @col x @row and returns the location where the
+ * next char will be put at.
+ */
+uint16_t *vga_setcursor(size_t col, size_t row) {
+  _cursorx = col;
+  _cursory = row;
+
+  return vga_tell();
+}
+
+/*
+ * vga_refresh
+ * Synchronizes the frontbuffer with the backbuffer. In fact, this
+ * function publishes the prepared changes to the user.
+ */
+uint16_t *vga_refresh(void) {
+  kmemcpy(_config.frontbuff, _config.backbuff,
+	  sizeof(uint16_t) * _config.sizex * _config.sizey);
+  vga_setcursor(0, 0);
+
+  return vga_tell();
+}
+
+/* vga_rotup
+ * Rotates the backbuffer @nrows up, clearing @nrows at the bottom. It
+ * also sets the cursor to the top of the freed space and returns its
+ * new location.
+ */
+uint16_t *vga_rotup(size_t nrows) {
+  uint16_t *areastart = vga_setcursor(0, nrows);
+  size_t nbytes = (_config.sizey - nrows) * _config.sizex * sizeof(uint16_t);
+
+  kmemcpy(_config.backbuff, areastart, nbytes);
+
+  uint16_t *areaend = vga_setcursor(0, _config.sizey - nrows);
+  kmemset16(areaend, 0, _config.sizex * nrows);
+  
+  return vga_tell();
+}
