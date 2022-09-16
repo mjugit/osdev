@@ -130,3 +130,35 @@ uint16_t *vga_print(const char *str) {
 
   return vga_tell();
 }
+
+/*
+ * vga_newline
+ * Sets the cursor to the first column of the next row. The screen
+ * will be scrolled if theres no space left.
+ */
+uint16_t *vga_newline(void) {
+  _cursorx = 0;
+
+  if (_cursory == _config.sizex -1)
+    vga_rotup(1);
+  else
+    _cursory++;
+
+  return vga_tell();
+}
+
+/*
+ * vga_getrow
+ * Returns the cursors y index.
+ */
+size_t vga_getrow(void) {
+  return _cursory;
+}
+
+/*
+ * vga_getcol
+ * Returns the cursors x index.
+ */
+size_t vga_getcol(void) {
+  return _cursorx;
+}

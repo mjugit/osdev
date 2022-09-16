@@ -4,8 +4,7 @@
 #  include <stdint.h>
 
 #  include "kmem.h"
-
-#include "../../libc/include/string.h"
+#  include "../../libc/include/string.h"
 
 /* 
  * VGA constants
@@ -131,6 +130,26 @@ extern uint16_t *vga_rotup(size_t nrows);
  * default attributes.
  */
 extern uint16_t *vga_print(const char *str);
+
+/*
+ * vga_newline
+ * Sets the cursor to the first column of the next row. The screen
+ * will be scrolled if theres no space left. Returns the new cursor
+ * posititon.
+ */
+extern uint16_t *vga_newline(void);
+
+/*
+ * vga_getrow
+ * Returns the cursors y index.
+ */
+extern size_t vga_getrow(void);
+
+/*
+ * vga_getcol
+ * Returns the cursors x index.
+ */
+extern size_t vga_getcol(void);
 
 
 #endif

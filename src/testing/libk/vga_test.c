@@ -110,7 +110,6 @@ deftest(vga_rotup__scrolls_screen_up) {
   fact(freearea == vga_tell());
 }
 
-
 deftest(vga_print__prints_null_terminated_string) {
   const char *dummystr = "Hello, world!\0";
   const uint8_t attr = vga_attr(VGA_WHITE, VGA_BLACK);
@@ -127,6 +126,16 @@ deftest(vga_print__prints_null_terminated_string) {
   fact(!kmemcmp(backbuffer, expected, sizeof(expected)));
 }
 
+deftest(vga_newline__performs_linefeed) {
+  vga_reset();
+  vga_setcursor(10, 0);
+  vga_newline();
+
+  fact(vga_getcol() == 0);
+  fact(vga_getrow() == 1);
+}
+
+
 deffixture(vga_test) {
   runtest(vga_configure__sets_video_options);
   runtest(vga_reset__clears_backbuffer);
@@ -137,6 +146,7 @@ deffixture(vga_test) {
   runtest(vga_refresh__copies_backbuffer_to_frontbuffer);
   runtest(vga_rotup__scrolls_screen_up);
   runtest(vga_print__prints_null_terminated_string);
+  runtest(vga_newline__performs_linefeed);
 }
 
 int main(void) {
