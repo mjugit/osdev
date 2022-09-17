@@ -11,14 +11,16 @@ static size_t _cursorx, _cursory;
  * amount of @cols and @rows (screen width and height). 
  */
 vga_config vga_configure(uint16_t *frontbuff_ptr,
-			  uint16_t *backbuff_ptr,
-			  size_t cols,
-			  size_t rows) {
+			 uint16_t *backbuff_ptr,
+			 size_t cols,
+			 size_t rows,
+			 size_t tablen) {
   _config = (vga_config) {
     .frontbuff = frontbuff_ptr,
     .backbuff = backbuff_ptr,
     .sizex = cols,
-    .sizey = rows
+    .sizey = rows,
+    .tablen = tablen
   };
 
   return _config;
@@ -145,6 +147,23 @@ uint16_t *vga_newline(void) {
     _cursory++;
 
   return vga_tell();
+}
+
+/*
+ * vga_tab
+ * Moves the cursor to the next tabstop.
+ */
+uint16_t *vga_tab(void) {
+  size_t nexttabstop = (((_cursorx / TABLEN) + 1) * TABLEN) - 1;
+  if (nexttabstop >= _config.sizex - 1) {
+    size_t remaining = nexttabstop - _config.sizex;
+    _cursory++;
+    _cursorx = remaining;
+  } else {
+    _cursorx = nexttabstop;
+  }
+  
+  return vga_setcursor(_cursorx, _cursory);
 }
 
 /*

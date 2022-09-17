@@ -46,7 +46,14 @@ typedef struct {
   uint16_t *frontbuff;
   uint16_t *backbuff;
   size_t sizex, sizey;
+  size_t tablen;
 } vga_config;
+
+
+/*
+ * The distance between tabstopps.
+ */
+# define TABLEN 10
 
 
 /*
@@ -71,9 +78,10 @@ typedef struct {
  * height).
  */
 extern vga_config vga_configure(uint16_t *frontbuff_ptr,
-				 uint16_t *backbuff_ptr,
-				 size_t cols,
-				 size_t rows);
+				uint16_t *backbuff_ptr,
+				size_t cols,
+				size_t rows,
+				size_t tablen);
 
 /*
  * vga_reset
@@ -138,6 +146,12 @@ extern uint16_t *vga_print(const char *str);
  * posititon.
  */
 extern uint16_t *vga_newline(void);
+
+/*
+ * vga_tab
+ * Moves the cursor to the next tabstop.
+ */
+extern uint16_t *vga_tab(void);
 
 /*
  * vga_getrow

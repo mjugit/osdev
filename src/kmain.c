@@ -19,7 +19,7 @@ static uint16_t _backbuff[VGA_COLS * VGA_ROWS];
 static uint16_t *_frontbuff = (uint16_t*)VGA_FRONTBUFF;
 
 void kmain(void) {
-  vga_configure(_frontbuff, _backbuff, VGA_COLS, VGA_ROWS);
+  vga_configure(_frontbuff, _backbuff, VGA_COLS, VGA_ROWS, TABLEN);
   vga_reset();
 
   vga_setattr(vga_attr(VGA_WHITE, VGA_BLACK));

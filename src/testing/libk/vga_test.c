@@ -16,13 +16,15 @@ deftest(vga_configure__sets_video_options) {
     .frontbuff = frontbuffer,
     .backbuff = backbuffer,
     .sizex = COLS,
-    .sizey = ROWS
+    .sizey = ROWS,
+    .tablen = TABLEN
   };
 
   vga_config actual = vga_configure(valuestr.frontbuff,
-				     valuestr.backbuff,
-				     valuestr.sizex,
-				     valuestr.sizey);
+				    valuestr.backbuff,
+				    valuestr.sizex,
+				    valuestr.sizey,
+				    valuestr.tablen);
 
   fact(!kmemcmp(&valuestr, &actual, sizeof(vga_config)));
 }
@@ -170,6 +172,31 @@ deftest(vga_newline__performs_linefeed) {
 }
 
 
+deftest(vga_tab__moves_cursor_to_next_tabstop) {
+  vga_reset();
+  
+  uint16_t *cursorbefore = vga_setcursor(4, 0);
+  uint16_t *cursorafter = vga_tab();
+
+  fact(cursorafter > cursorbefore);
+  fact(vga_getcol() == TABLEN - 1);
+
+  size_t somewhere = TABLEN * 3 - TABLEN / 3;
+  cursorbefore = vga_setcursor(somewhere, 0);
+  cursorafter = vga_tab();
+
+  fact(cursorafter > cursorbefore);
+  fact(cursorafter == vga_setcursor(TABLEN * 3 - 1, 0));
+
+  size_t edge = COLS - 2;
+  vga_setcursor(edge, 0);
+  size_t _cursorybefore = vga_getrow();
+  vga_tab();
+
+  fact(_cursorybefore < vga_getrow());
+}
+
+
 deftest(vga_printhex__prints_src_as_hex) {
   uint64_t valuelong = 0x12345;
   const char *valuestr = "0x12345\0";
@@ -241,7 +268,7 @@ deffixture(printf_components) {
   runtest(vga_printuint__prints_src_as_unsigned_decimal);
   runtest(vga_printint__prints_src_as_decimal);
   runtest(vga_printptr__prints_address_of_ptr);
-  
+  runtest(vga_tab__moves_cursor_to_next_tabstop);
 }
 
 
