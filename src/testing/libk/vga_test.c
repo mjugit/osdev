@@ -8,6 +8,9 @@
 static uint16_t backbuffer[COLS * ROWS];
 static uint16_t frontbuffer[COLS * ROWS];
 
+
+// Configuration functions
+
 deftest(vga_configure__sets_video_options) {
   vga_config valuestr = {
     .frontbuff = frontbuffer,
@@ -24,6 +27,7 @@ deftest(vga_configure__sets_video_options) {
   fact(!kmemcmp(&valuestr, &actual, sizeof(vga_config)));
 }
 
+
 deftest(vga_reset__clears_backbuffer) {
   uint16_t valuestr[ROWS * COLS];
   kmemset16(valuestr, 0x00, ROWS * COLS);
@@ -35,6 +39,7 @@ deftest(vga_reset__clears_backbuffer) {
   fact(cursor_ptr == backbuffer);
 }
 
+
 deftest(vga_setattr__sets_attr_of_next_chars) {
   uint8_t valuestr = 0xff;
 
@@ -42,6 +47,17 @@ deftest(vga_setattr__sets_attr_of_next_chars) {
 
   fact(actual == valuestr);
 }
+
+
+deffixture(config_functions) {
+  runtest(vga_configure__sets_video_options);
+  runtest(vga_reset__clears_backbuffer);
+  runtest(vga_setattr__sets_attr_of_next_chars);
+}
+
+
+
+// Display essentials
 
 deftest(vga_putch__puts_char_at_cursor) {
   uint16_t *startpos = vga_tell();
@@ -55,6 +71,7 @@ deftest(vga_putch__puts_char_at_cursor) {
   fact(*startpos == vga_ch(expected_ch, expected_attr));
 }
 
+
 deftest(vga_putch__scrolls_if_screen_is_full) {
   vga_reset();
   size_t total_chars = COLS * ROWS;
@@ -66,6 +83,7 @@ deftest(vga_putch__scrolls_if_screen_is_full) {
   uint16_t *cursor_expected = vga_setcursor(0, ROWS - 1);
   fact (cursor_end == cursor_expected);
 }
+
 
 deftest(vga_setcursor__moves_cursor) {
   vga_reset();
@@ -84,6 +102,7 @@ deftest(vga_setcursor__moves_cursor) {
   fact(actual == valuestr);
 }
 
+
 deftest(vga_refresh__copies_backbuffer_to_frontbuffer) {
   vga_reset();
   
@@ -95,7 +114,8 @@ deftest(vga_refresh__copies_backbuffer_to_frontbuffer) {
   fact(!kmemcmp(frontbuffer, backbuffer, sizeof(frontbuffer)));
 }
 
-deftest(vga_rotup__scrolls_screen_up) { 
+
+deftest(vga_rotup__scrolls_screen_up) {
   uint16_t expectedempty[3 * COLS];
   kmemset16(expectedempty, 0, 3 * COLS);
   
@@ -110,6 +130,19 @@ deftest(vga_rotup__scrolls_screen_up) {
   fact(freearea == vga_tell());
 }
 
+
+deffixture(display_essentials) {
+  runtest(vga_putch__puts_char_at_cursor);
+  runtest(vga_putch__scrolls_if_screen_is_full);
+  runtest(vga_setcursor__moves_cursor);
+  runtest(vga_refresh__copies_backbuffer_to_frontbuffer);
+  runtest(vga_rotup__scrolls_screen_up);
+}
+
+
+
+// Components of the printf function
+  
 deftest(vga_print__prints_null_terminated_string) {
   const char *dummystr = "Hello, world!\0";
   const uint8_t attr = vga_attr(VGA_WHITE, VGA_BLACK);
@@ -126,6 +159,7 @@ deftest(vga_print__prints_null_terminated_string) {
   fact(!kmemcmp(backbuffer, valuestr, sizeof(valuestr)));
 }
 
+
 deftest(vga_newline__performs_linefeed) {
   vga_reset();
   vga_setcursor(10, 0);
@@ -134,6 +168,7 @@ deftest(vga_newline__performs_linefeed) {
   fact(vga_getcol() == 0);
   fact(vga_getrow() == 1);
 }
+
 
 deftest(vga_printhex__prints_src_as_hex) {
   uint64_t valuelong = 0x12345;
@@ -150,6 +185,7 @@ deftest(vga_printhex__prints_src_as_hex) {
   fact(!kmemcmp(expectedpos, actualpos, valuestrlen * sizeof(uint16_t)));
 }
 
+
 deftest(vga_printuint__prints_src_as_unsigned_decimal) {
   uint64_t valuelong = 1234;
   const char *valuestr = "1234\0";
@@ -165,6 +201,7 @@ deftest(vga_printuint__prints_src_as_unsigned_decimal) {
   fact(!kmemcmp(expectedpos, actualpos, valuestrlen * sizeof(uint16_t)));
 }
 
+
 deftest(vga_printint__prints_src_as_decimal) {
   uint64_t valuelong = -1234;
   const char *valuestr = "-1234\0";
@@ -179,6 +216,7 @@ deftest(vga_printint__prints_src_as_decimal) {
 
   fact(!kmemcmp(expectedpos, actualpos, valuestrlen * sizeof(uint16_t)));
 }
+
 
 deftest(vga_printptr__prints_address_of_ptr) {
   void *valueptr = (void*)0x12345678;
@@ -196,24 +234,7 @@ deftest(vga_printptr__prints_address_of_ptr) {
 }
 
 
-deffixture(vga_test) {
-
-  // Configuration functions
-  
-  runtest(vga_configure__sets_video_options);
-  runtest(vga_reset__clears_backbuffer);
-  runtest(vga_setattr__sets_attr_of_next_chars);
-
-  // Display essentials
-  
-  runtest(vga_putch__puts_char_at_cursor);
-  runtest(vga_putch__scrolls_if_screen_is_full);
-  runtest(vga_setcursor__moves_cursor);
-  runtest(vga_refresh__copies_backbuffer_to_frontbuffer);
-  runtest(vga_rotup__scrolls_screen_up);
-
-  // Components of the kprintf function
-  
+deffixture(printf_components) {
   runtest(vga_print__prints_null_terminated_string);
   runtest(vga_newline__performs_linefeed);
   runtest(vga_printhex__prints_src_as_hex);
@@ -223,7 +244,13 @@ deffixture(vga_test) {
   
 }
 
+
+
+
 int main(void) {
-  runfixture(vga_test);
+  runfixture(config_functions);
+  runfixture(display_essentials);
+  runfixture(printf_components);
+  
   report();
 }
