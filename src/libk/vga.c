@@ -11,14 +11,16 @@ static size_t _cursorx, _cursory;
  * amount of @cols and @rows (screen width and height). 
  */
 vga_config vga_configure(uint16_t *frontbuff_ptr,
-			  uint16_t *backbuff_ptr,
-			  size_t cols,
-			  size_t rows) {
+			 uint16_t *backbuff_ptr,
+			 size_t cols,
+			 size_t rows,
+			 size_t tablen) {
   _config = (vga_config) {
     .frontbuff = frontbuff_ptr,
     .backbuff = backbuff_ptr,
     .sizex = cols,
-    .sizey = rows
+    .sizey = rows,
+    .tablen = tablen
   };
 
   return _config;
@@ -129,4 +131,127 @@ uint16_t *vga_print(const char *str) {
     vga_putch(*str++);
 
   return vga_tell();
+}
+
+/*
+ * vga_newline
+ * Sets the cursor to the first column of the next row. The screen
+ * will be scrolled if theres no space left.
+ */
+uint16_t *vga_newline(void) {
+  _cursorx = 0;
+
+  if (_cursory == _config.sizex -1)
+    vga_rotup(1);
+  else
+    _cursory++;
+
+  return vga_tell();
+}
+
+/*
+ * vga_tab
+ * Moves the cursor to the next tabstop.
+ */
+uint16_t *vga_tab(void) {
+  size_t nexttabstop = (((_cursorx / TABLEN) + 1) * TABLEN) - 1;
+  if (nexttabstop >= _config.sizex - 1) {
+    size_t remaining = nexttabstop - _config.sizex;
+    _cursory++;
+    _cursorx = remaining;
+  } else {
+    _cursorx = nexttabstop;
+  }
+  
+  return vga_setcursor(_cursorx, _cursory);
+}
+
+/*
+ * vga_getrow
+ * Returns the cursors y index.
+ */
+size_t vga_getrow(void) {
+  return _cursory;
+}
+
+/*
+ * vga_getcol
+ * Returns the cursors x index.
+ */
+size_t vga_getcol(void) {
+  return _cursorx;
+}
+
+/*
+ * vga_printhex
+ * Prints @src in hex representation at the current cursor position.
+ */
+uint16_t *vga_printhex(uint64_t src) {
+  char glyphbuff[64] = { 0 };
+  char glyphs[] = "0123456789abcdef";
+
+  glyphbuff[63] = '\0';
+  char *glyphptr = &glyphbuff[62];
+
+  while (src > 0) {
+    char nextglyph = glyphs[src % 16];
+    src /= 16;
+    *glyphptr-- = nextglyph;
+  }
+
+  *glyphptr-- = 'x'; 
+  *glyphptr = '0';
+  
+  vga_print(glyphptr);
+
+  return vga_tell();
+}
+
+/*
+ * vga_printuint
+ * Prints @src in unsigned decimal representation at the current
+ * cursor position.
+ */
+uint16_t *vga_printuint(uint64_t src) {
+  char glyphbuff[64] = { 0 };
+  char glyphs[] = "0123456789";
+
+  glyphbuff[63] = '\0';
+  char *glyphptr = &glyphbuff[63];
+  
+  while (src > 0) {
+    glyphptr--;
+    char nextglyph = glyphs[src % 10];
+    src /= 10;
+    *glyphptr = nextglyph;
+  }
+
+  vga_print(glyphptr);
+
+  return vga_tell();    
+}
+
+/*
+ * vga_printint
+ * Prints @src in decimal representation at the current cursor
+ * position.
+ */
+uint16_t *vga_printint(int64_t src) {
+  if (src < 0) {
+    src *= -1;
+    vga_putch('-');
+  }
+
+  vga_printuint(src);
+  
+  return vga_tell();
+}
+
+/*
+ * vga_printptr
+ * Prints the address @src is pointing to.
+ */
+uint16_t *vga_printptr(void *ptr) {
+  uint64_t ptraddr = (uint64_t)ptr;
+  return vga_printhex(ptraddr);
 }

@@ -4,8 +4,7 @@
 #  include <stdint.h>
 
 #  include "kmem.h"
-
-#include "../../libc/include/string.h"
+#  include "../../libc/include/string.h"
 
 /* 
  * VGA constants
@@ -47,7 +46,14 @@ typedef struct {
   uint16_t *frontbuff;
   uint16_t *backbuff;
   size_t sizex, sizey;
+  size_t tablen;
 } vga_config;
+
+
+/*
+ * The distance between tabstopps.
+ */
+# define TABLEN 10
 
 
 /*
@@ -72,9 +78,10 @@ typedef struct {
  * height).
  */
 extern vga_config vga_configure(uint16_t *frontbuff_ptr,
-				 uint16_t *backbuff_ptr,
-				 size_t cols,
-				 size_t rows);
+				uint16_t *backbuff_ptr,
+				size_t cols,
+				size_t rows,
+				size_t tablen);
 
 /*
  * vga_reset
@@ -131,6 +138,58 @@ extern uint16_t *vga_rotup(size_t nrows);
  * default attributes.
  */
 extern uint16_t *vga_print(const char *str);
+
+/*
+ * vga_newline
+ * Sets the cursor to the first column of the next row. The screen
+ * will be scrolled if theres no space left. Returns the new cursor
+ * posititon.
+ */
+extern uint16_t *vga_newline(void);
+
+/*
+ * vga_tab
+ * Moves the cursor to the next tabstop.
+ */
+extern uint16_t *vga_tab(void);
+
+/*
+ * vga_getrow
+ * Returns the cursors y index.
+ */
+extern size_t vga_getrow(void);
+
+/*
+ * vga_getcol
+ * Returns the cursors x index.
+ */
+extern size_t vga_getcol(void);
+
+/*
+ * vga_printhex
+ * Prints @src in hex representation at the current cursor position.
+ */
+extern uint16_t *vga_printhex(uint64_t src);
+
+/*
+ * vga_printuint
+ * Prints @src in unsigned decimal representation at the current
+ * cursor position.
+ */
+extern uint16_t *vga_printuint(uint64_t src);
+
+/*
+ * vga_printint
+ * Prints @src in decimal representation at the current cursor
+ * position.
+ */
+extern uint16_t *vga_printint(int64_t src);
+
+/*
+ * vga_printptr
+ * Prints the address @src is pointing to.
+ */
+extern uint16_t *vga_printptr(void *ptr);
 
 
 #endif
