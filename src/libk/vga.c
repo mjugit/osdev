@@ -63,14 +63,28 @@ uint16_t *vga_tell(void) {
  */
 uint16_t *vga_putch(const char ch) {
   uint16_t *cursor = vga_tell();
-  *cursor = vga_ch(ch, _defaultattr);
 
-  if (++_cursorx >= _config.sizex) {
-    ++_cursory;
-    _cursorx = 0;
+  switch (ch) {
+  case '\n':
+    vga_newline();
+    break;
 
-    if (_cursory >= _config.sizey)
-      vga_rotup(1);
+  case '\t':
+    vga_tab();
+    break;
+
+  default:
+    *cursor = vga_ch(ch, _defaultattr);
+
+    if (++_cursorx >= _config.sizex) {
+      ++_cursory;
+      _cursorx = 0;
+
+      if (_cursory >= _config.sizey)
+	vga_rotup(1);
+    }
+
+    break;
   }
   
   return vga_tell();
@@ -126,7 +140,7 @@ uint16_t *vga_rotup(size_t nrows) {
  * the current cursor location. All chars will be configured with the
  * default attributes.
  */
-uint16_t *vga_print(const char *str) {
+uint16_t *vga_printstr(const char *str) {
   while (*str)
     vga_putch(*str++);
 
@@ -186,7 +200,7 @@ size_t vga_getcol(void) {
  * vga_printhex
  * Prints @src in hex representation at the current cursor position.
  */
-uint16_t *vga_printhex(uint64_t src) {
+uint16_t *vga_printhex(uint32_t src) {
   char glyphbuff[64] = { 0 };
   char glyphs[] = "0123456789abcdef";
 
@@ -202,7 +216,7 @@ uint16_t *vga_printhex(uint64_t src) {
   *glyphptr-- = 'x'; 
   *glyphptr = '0';
   
-  vga_print(glyphptr);
+  vga_printstr(glyphptr);
 
   return vga_tell();
 }
@@ -212,7 +226,7 @@ uint16_t *vga_printhex(uint64_t src) {
  * Prints @src in unsigned decimal representation at the current
  * cursor position.
  */
-uint16_t *vga_printuint(uint64_t src) {
+uint16_t *vga_printuint(uint32_t src) {
   char glyphbuff[64] = { 0 };
   char glyphs[] = "0123456789";
 
@@ -226,7 +240,7 @@ uint16_t *vga_printuint(uint64_t src) {
     *glyphptr = nextglyph;
   }
 
-  vga_print(glyphptr);
+  vga_printstr(glyphptr);
 
   return vga_tell();    
 }
@@ -236,7 +250,7 @@ uint16_t *vga_printuint(uint64_t src) {
  * Prints @src in decimal representation at the current cursor
  * position.
  */
-uint16_t *vga_printint(int64_t src) {
+uint16_t *vga_printint(int32_t src) {
   if (src < 0) {
     src *= -1;
     vga_putch('-');
@@ -252,6 +266,6 @@ uint16_t *vga_printint(int64_t src) {
  * Prints the address @src is pointing to.
  */
 uint16_t *vga_printptr(void *ptr) {
-  uint64_t ptraddr = (uint64_t)ptr;
+  uint32_t ptraddr = (uint32_t)ptr;
   return vga_printhex(ptraddr);
 }

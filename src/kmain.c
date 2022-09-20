@@ -10,8 +10,8 @@
 #include <stdint.h>
 
 #include "libc/include/string.h"
-#include "libk/include/vga.h"
 
+#include "libk/include/kstd.h"
 #include "libk/include/kmem.h"
 #include "libk/include/vga.h"
 
@@ -23,6 +23,11 @@ void kmain(void) {
   vga_reset();
 
   vga_setattr(vga_attr(VGA_WHITE, VGA_BLACK));
-  vga_print("Hello, world!");
+
+  kprintf("Hello, %s!\n", "world");
+  vga_setattr(vga_attr(VGA_LIGHT_MAGENTA, VGA_BROWN));
+  
+  kprintf("What is this for %d (%x) improvement!", 1, 1);
+  
   vga_refresh();
 }
