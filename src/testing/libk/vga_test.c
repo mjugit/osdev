@@ -145,7 +145,7 @@ deffixture(display_essentials) {
 
 // Components of the printf function
   
-deftest(vga_print__prints_null_terminated_string) {
+deftest(vga_printstr__prints_null_terminated_string) {
   const char *dummystr = "Hello, world!\0";
   const uint8_t attr = vga_attr(VGA_WHITE, VGA_BLACK);
 
@@ -156,7 +156,7 @@ deftest(vga_print__prints_null_terminated_string) {
   
   vga_reset();
 
-  vga_print(dummystr);
+  vga_printstr(dummystr);
 
   fact(!kmemcmp(backbuffer, valuestr, sizeof(valuestr)));
 }
@@ -202,7 +202,7 @@ deftest(vga_printhex__prints_src_as_hex) {
   const char *valuestr = "0x12345\0";
   
   uint16_t *expectedpos = vga_reset();
-  vga_print(valuestr);
+  vga_printstr(valuestr);
   uint16_t *actualpos = vga_newline();
   vga_printhex(valuelong);
 
@@ -218,7 +218,7 @@ deftest(vga_printuint__prints_src_as_unsigned_decimal) {
   const char *valuestr = "1234\0";
 
   uint16_t *expectedpos = vga_reset();
-  vga_print(valuestr);
+  vga_printstr(valuestr);
   uint16_t *actualpos = vga_newline();
   vga_printuint(valuelong);
 
@@ -234,7 +234,7 @@ deftest(vga_printint__prints_src_as_decimal) {
   const char *valuestr = "-1234\0";
 
   uint16_t *expectedpos = vga_reset();
-  vga_print(valuestr);
+  vga_printstr(valuestr);
   uint16_t *actualpos = vga_newline();
   vga_printint(valuelong);
 
@@ -250,7 +250,7 @@ deftest(vga_printptr__prints_address_of_ptr) {
   const char *valuestr = "0x12345678\0";
 
   uint16_t *expectedpos = vga_reset();
-  vga_print(valuestr);
+  vga_printstr(valuestr);
   uint16_t *actualpos = vga_newline();
   vga_printptr(valueptr);
 
@@ -262,7 +262,7 @@ deftest(vga_printptr__prints_address_of_ptr) {
 
 
 deffixture(printf_components) {
-  runtest(vga_print__prints_null_terminated_string);
+  runtest(vga_printstr__prints_null_terminated_string);
   runtest(vga_newline__performs_linefeed);
   runtest(vga_printhex__prints_src_as_hex);
   runtest(vga_printuint__prints_src_as_unsigned_decimal);

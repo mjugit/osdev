@@ -137,7 +137,7 @@ extern uint16_t *vga_rotup(size_t nrows);
  * the current cursor location. All chars will be configured with the
  * default attributes.
  */
-extern uint16_t *vga_print(const char *str);
+extern uint16_t *vga_printstr(const char *str);
 
 /*
  * vga_newline
@@ -169,21 +169,21 @@ extern size_t vga_getcol(void);
  * vga_printhex
  * Prints @src in hex representation at the current cursor position.
  */
-extern uint16_t *vga_printhex(uint64_t src);
+extern uint16_t *vga_printhex(uint32_t src);
 
 /*
  * vga_printuint
  * Prints @src in unsigned decimal representation at the current
  * cursor position.
  */
-extern uint16_t *vga_printuint(uint64_t src);
+extern uint16_t *vga_printuint(uint32_t src);
 
 /*
  * vga_printint
  * Prints @src in decimal representation at the current cursor
  * position.
  */
-extern uint16_t *vga_printint(int64_t src);
+extern uint16_t *vga_printint(int32_t src);
 
 /*
  * vga_printptr

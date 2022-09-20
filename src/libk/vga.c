@@ -126,7 +126,7 @@ uint16_t *vga_rotup(size_t nrows) {
  * the current cursor location. All chars will be configured with the
  * default attributes.
  */
-uint16_t *vga_print(const char *str) {
+uint16_t *vga_printstr(const char *str) {
   while (*str)
     vga_putch(*str++);
 
@@ -186,7 +186,7 @@ size_t vga_getcol(void) {
  * vga_printhex
  * Prints @src in hex representation at the current cursor position.
  */
-uint16_t *vga_printhex(uint64_t src) {
+uint16_t *vga_printhex(uint32_t src) {
   char glyphbuff[64] = { 0 };
   char glyphs[] = "0123456789abcdef";
 
@@ -202,7 +202,7 @@ uint16_t *vga_printhex(uint64_t src) {
   *glyphptr-- = 'x'; 
   *glyphptr = '0';
   
-  vga_print(glyphptr);
+  vga_printstr(glyphptr);
 
   return vga_tell();
 }
@@ -212,7 +212,7 @@ uint16_t *vga_printhex(uint64_t src) {
  * Prints @src in unsigned decimal representation at the current
  * cursor position.
  */
-uint16_t *vga_printuint(uint64_t src) {
+uint16_t *vga_printuint(uint32_t src) {
   char glyphbuff[64] = { 0 };
   char glyphs[] = "0123456789";
 
@@ -226,7 +226,7 @@ uint16_t *vga_printuint(uint64_t src) {
     *glyphptr = nextglyph;
   }
 
-  vga_print(glyphptr);
+  vga_printstr(glyphptr);
 
   return vga_tell();    
 }
@@ -236,7 +236,7 @@ uint16_t *vga_printuint(uint64_t src) {
  * Prints @src in decimal representation at the current cursor
  * position.
  */
-uint16_t *vga_printint(int64_t src) {
+uint16_t *vga_printint(int32_t src) {
   if (src < 0) {
     src *= -1;
     vga_putch('-');

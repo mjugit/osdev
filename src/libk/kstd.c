@@ -7,6 +7,9 @@
  *
  * %x    hexadecimal
  * %u    unsigned decimal
+ * %d    decimal
+ * %s    string
+ * %c    single char
  *
  * %     percent sign
  */
@@ -20,18 +23,35 @@ void kprintf(char *format, ...) {
     if (*formatptr == '%') {
       formatptr++;
 
-      uint64_t uint_repl;
+      uint32_t uint_repl;
+      int32_t int_repl;
+      char *str_repl;
       
       switch (*formatptr) {
 
       case 'x':
-	uint_repl = va_arg(args, uint64_t);
+	uint_repl = va_arg(args, uint32_t);
 	vga_printhex(uint_repl);
 	break;
 
       case 'u':
-	uint_repl = va_arg(args, uint64_t);
+	uint_repl = va_arg(args, uint32_t);
 	vga_printuint(uint_repl);
+	break;
+
+      case 'd':
+	int_repl = va_arg(args, int32_t);
+	vga_printint(int_repl);
+	break;
+
+      case 's':
+	str_repl = va_arg(args, char*);
+	vga_printstr(str_repl);
+	break;
+
+      case 'c':
+	int_repl = va_arg(args, int32_t);
+	vga_putch(int_repl);
 	break;
 
       default:
