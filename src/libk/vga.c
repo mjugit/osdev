@@ -63,14 +63,28 @@ uint16_t *vga_tell(void) {
  */
 uint16_t *vga_putch(const char ch) {
   uint16_t *cursor = vga_tell();
-  *cursor = vga_ch(ch, _defaultattr);
 
-  if (++_cursorx >= _config.sizex) {
-    ++_cursory;
-    _cursorx = 0;
+  switch (ch) {
+  case '\n':
+    vga_newline();
+    break;
 
-    if (_cursory >= _config.sizey)
-      vga_rotup(1);
+  case '\t':
+    vga_tab();
+    break;
+
+  default:
+    *cursor = vga_ch(ch, _defaultattr);
+
+    if (++_cursorx >= _config.sizex) {
+      ++_cursory;
+      _cursorx = 0;
+
+      if (_cursory >= _config.sizey)
+	vga_rotup(1);
+    }
+
+    break;
   }
   
   return vga_tell();
@@ -252,6 +266,6 @@ uint16_t *vga_printint(int32_t src) {
  * Prints the address @src is pointing to.
  */
 uint16_t *vga_printptr(void *ptr) {
-  uint64_t ptraddr = (uint64_t)ptr;
+  uint32_t ptraddr = (uint32_t)ptr;
   return vga_printhex(ptraddr);
 }

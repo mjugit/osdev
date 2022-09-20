@@ -132,7 +132,7 @@ extern uint16_t *vga_refresh(void);
 extern uint16_t *vga_rotup(size_t nrows);
 
 /*
- * vga_print
+ * vga_printstr
  * Prints the \0 terminated string @str to the screen, beginning at
  * the current cursor location. All chars will be configured with the
  * default attributes.
