@@ -28,7 +28,6 @@ void kprintf(char *format, ...) {
       char *str_repl;
       
       switch (*formatptr) {
-
       case 'x':
 	uint_repl = va_arg(args, uint32_t);
 	vga_printhex(uint_repl);
@@ -58,7 +57,7 @@ void kprintf(char *format, ...) {
 	vga_putch('%');
 	break;
       }
-      
+
     } else {
       vga_putch(*formatptr);
     }

@@ -37,7 +37,8 @@ LIBC_OBJ = \
 
 LIBK_OBJ = \
 	$(LIBK_OBJ_DIR)/vga.o\
-	$(LIBK_OBJ_DIR)/kmem.o
+	$(LIBK_OBJ_DIR)/kmem.o\
+	$(LIBK_OBJ_DIR)/kstd.o
 
 BOOT_OBJ = \
 	$(BOOT_OBJ_DIR)/boot.o
