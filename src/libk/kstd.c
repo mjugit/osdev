@@ -70,23 +70,18 @@ void kprintf(char *format, ...) {
 
 
 /*
- * encode_gdt
- * Creates an entry at for the global descriptor table at @gdtptr
+ * kencode_gdt
+ * Creates an entry for the global descriptor table at @gdtptr
  * containing the @base address, the @limit, the as well as the given
  * @accessbyte and @flags.
  */
-void  encode_gdt(uint8_t *gdtptr,
-		 uint32_t base,
-		 uint32_t limit,
-		 uint8_t flags,
-		 uint8_t accessbyte) {
-  
-  *gdtptr++ = limit & 0xff;
-  *gdtptr++ = (limit >> 8) & 0xff;
-  *gdtptr++ = base & 0xff;
-  *gdtptr++ = (base >> 8) & 0xff;
-  *gdtptr++ = (base >> 16) & 0xff;
-  *gdtptr++ = accessbyte;
-  *gdtptr++ = (flags << 4);
-  *gdtptr   = (base >> 24) & 0xff;
+void kencode_gdt(uint8_t *dest, struct gdt_entry src) {
+  *dest++ = src.limit & 0xff;
+  *dest++ = (src.limit >> 8) & 0xff;
+  *dest++ = src.base & 0xff;
+  *dest++ = (src.base >> 8) & 0xff;
+  *dest++ = (src.base >> 16) & 0xff;
+  *dest++ = src.accessbyte;
+  *dest++ = (src.flags << 4);
+  *dest   = (src.base >> 24) & 0xff;
 }
