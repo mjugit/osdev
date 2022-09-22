@@ -16,4 +16,16 @@
  */
 extern void kprintf(char *format, ...);
 
+/*
+ * encode_gdt
+ * Creates an entry at for the global descriptor table at @gdtptr
+ * containing the @base address, the @limit, the as well as the given
+ * @accessbyte and @flags.
+ */
+extern void  encode_gdt(uint8_t *gdtptr,
+			uint32_t base,
+			uint32_t limit,
+			uint8_t flags,
+			uint8_t accessbyte);
+
 #endif // KSTD_H
