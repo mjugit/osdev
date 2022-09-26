@@ -64,10 +64,10 @@ void kprintf(char *format, ...) {
     
     formatptr++;
   }
-  
-  va_end(args);
-}
 
+  va_end(args);
+  vga_refresh();
+}
 
 /*
  * kencode_gdt
