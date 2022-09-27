@@ -11,7 +11,7 @@
  * %s    string
  * %c    single char
  *
- * %     percent sign
+ * %%    percent sign
  */
 void kprintf(char *format, ...) {
   char *formatptr = format;
@@ -26,6 +26,7 @@ void kprintf(char *format, ...) {
       uint32_t uint_repl;
       int32_t int_repl;
       char *str_repl;
+      char char_repl;
       
       switch (*formatptr) {
       case 'x':
@@ -49,8 +50,8 @@ void kprintf(char *format, ...) {
 	break;
 
       case 'c':
-	int_repl = va_arg(args, int32_t);
-	vga_putch(int_repl);
+	char_repl = va_arg(args, uint32_t);
+	vga_putch(char_repl);
 	break;
 
       default:
@@ -64,6 +65,24 @@ void kprintf(char *format, ...) {
     
     formatptr++;
   }
-  
+
   va_end(args);
+  vga_refresh();
+}
+
+/*
+ * kencode_gdt
+ * Creates an entry for the global descriptor table at @gdtptr
+ * containing the @base address, the @limit, the as well as the given
+ * @accessbyte and @flags.
+ */
+void kencode_gdt(uint8_t *dest, struct gdt_entry src) {
+  *dest++ = src.limit & 0xff;
+  *dest++ = (src.limit >> 8) & 0xff;
+  *dest++ = src.base & 0xff;
+  *dest++ = (src.base >> 8) & 0xff;
+  *dest++ = (src.base >> 16) & 0xff;
+  *dest++ = src.accessbyte;
+  *dest++ = (src.flags << 4);
+  *dest   = (src.base >> 24) & 0xff;
 }

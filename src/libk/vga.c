@@ -75,12 +75,13 @@ uint16_t *vga_putch(const char ch) {
 
   default:
     *cursor = vga_ch(ch, _defaultattr);
-
-    if (++_cursorx >= _config.sizex) {
-      ++_cursory;
+    _cursorx++;
+    
+    if (_cursorx > _config.sizex - 1) {
+      _cursory++;
       _cursorx = 0;
 
-      if (_cursory >= _config.sizey)
+      if (_cursory > _config.sizey - 1)
 	vga_rotup(1);
     }
 
@@ -110,7 +111,6 @@ uint16_t *vga_setcursor(size_t col, size_t row) {
 uint16_t *vga_refresh(void) {
   kmemcpy(_config.frontbuff, _config.backbuff,
 	  sizeof(uint16_t) * _config.sizex * _config.sizey);
-  vga_setcursor(0, 0);
 
   return vga_tell();
 }
@@ -154,11 +154,10 @@ uint16_t *vga_printstr(const char *str) {
  */
 uint16_t *vga_newline(void) {
   _cursorx = 0;
+  _cursory++;
 
-  if (_cursory == _config.sizex -1)
+  if (_cursory > _config.sizey - 1)
     vga_rotup(1);
-  else
-    _cursory++;
 
   return vga_tell();
 }

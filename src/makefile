@@ -38,7 +38,8 @@ LIBC_OBJ = \
 LIBK_OBJ = \
 	$(LIBK_OBJ_DIR)/vga.o\
 	$(LIBK_OBJ_DIR)/kmem.o\
-	$(LIBK_OBJ_DIR)/kstd.o
+	$(LIBK_OBJ_DIR)/kstd.o\
+	$(LIBK_OBJ_DIR)/kbase.o
 
 BOOT_OBJ = \
 	$(BOOT_OBJ_DIR)/boot.o
@@ -81,7 +82,7 @@ $(LIBC_OBJ_DIR)/%.o: libc/%.c | $(LIBC_OBJ_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 $(LIBC_OBJ_DIR):
-	mkdir -p $(LIBC_OBJ_DIR)
+	mkdir -p "$(LIBC_OBJ_DIR)"
 
 
 # Rules for libk
@@ -91,6 +92,9 @@ libk: libc $(LIBK_OBJ)
 
 $(LIBK_OBJ_DIR)/%.o: libk/%.c | $(LIBK_OBJ_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS)
+
+$(LIBK_OBJ_DIR)/%.o: libk/%.s  | $(LIBK_OBJ_DIR)
+	$(AS) -c $< -o $@ $(ASFLAGS)
 
 $(LIBK_OBJ_DIR):
 	mkdir -p $(LIBK_OBJ_DIR)

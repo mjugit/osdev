@@ -32,18 +32,25 @@
 	// Leave space for the returned header
 	.space 4 * 13
 
+
 	.section .bss
 	.align 16
+
 stack_bottom:
 	.skip 16384
 stack_top:
+
 	push %ebx
 
 	.section .text
+
 	.global _start
 	.type _start, @function
+
 _start:
 	mov $stack_top, %esp
+
+	call kearly
 	call kmain
 
 	cli
