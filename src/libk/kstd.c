@@ -26,6 +26,7 @@ void kprintf(char *format, ...) {
       uint32_t uint_repl;
       int32_t int_repl;
       char *str_repl;
+      char char_repl;
       
       switch (*formatptr) {
       case 'x':
@@ -49,8 +50,8 @@ void kprintf(char *format, ...) {
 	break;
 
       case 'c':
-	int_repl = va_arg(args, int32_t);
-	vga_putch(int_repl);
+	char_repl = va_arg(args, uint32_t);
+	vga_putch(char_repl);
 	break;
 
       default:

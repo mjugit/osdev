@@ -35,5 +35,8 @@ void kearly(void) {
  * The kernel main function.
  */
 void kmain(void) {
-  kprintf("Up and running.\n");
+  kprintf("Up and running.\n\0");
+  kprintf("\tAnother line.\n\0");
+  kprintf("\tA third line.\n\0");
+  kprintf("Number %d", 4);
 }
