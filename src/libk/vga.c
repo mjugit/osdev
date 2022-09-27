@@ -154,11 +154,10 @@ uint16_t *vga_printstr(const char *str) {
  */
 uint16_t *vga_newline(void) {
   _cursorx = 0;
+  _cursory++;
 
-  if (_cursory == _config.sizex -1)
+  if (_cursory == _config.sizey - 1)
     vga_rotup(1);
-  else
-    _cursory++;
 
   return vga_tell();
 }
