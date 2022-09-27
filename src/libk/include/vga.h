@@ -53,7 +53,7 @@ typedef struct {
 /*
  * The distance between tabstopps.
  */
-# define TABLEN 10
+#  define TABLEN 10
 
 
 /*
@@ -165,35 +165,43 @@ extern size_t vga_getrow(void);
  */
 extern size_t vga_getcol(void);
 
-
-#define vga_printhex32(src) vga_printhex(src)
-#define vga_printhex16(src) vga_printhex((0 | ((0xffff) & (src))))
-#define vga_printhex8(src) vga_printhex((0 | ((0xff) & (src))))
 /*
  * vga_printhex
  * Prints @src in hex representation at the current cursor position.
  */
 extern uint16_t *vga_printhex(uint32_t src);
+/*
+ * vga_printhex overloads for specific sizes;
+ */
+#  define vga_printhex32(src) vga_printhex(src)
+#  define vga_printhex16(src) vga_printhex(((0xffff) & (src)))
+#  define vga_printhex8(src) vga_printhex(((0xff) & (src)))
 
-#define vga_printuint32(src) vga_printuint(src)
-#define vga_printuint16(src) vga_printuint((0 | ((0xffff) & (src))))
-#define vga_printuint8(src) vga_printuint((0 | ((0xff) & (src))))
 /*
  * vga_printuint
  * Prints @src in unsigned decimal representation at the current
  * cursor position.
  */
 extern uint16_t *vga_printuint(uint32_t src);
+/*
+ * vga_printuint overloads for specific sizes;
+ */
+#  define vga_printuint32(src) vga_printuint(src)
+#  define vga_printuint16(src) vga_printuint(((0xffff) & (src)))
+#  define vga_printuint8(src) vga_printuint(((0xff) & (src)))
 
-#define vga_printint32(src) vga_printint(src)
-#define vga_printint16(src) vga_printint((0 | ((0xffff) & (src))))
-#define vga_printint8(src) vga_printint((0 | ((0xff) & (src))))
 /*
  * vga_printint
  * Prints @src in decimal representation at the current cursor
  * position.
  */
 extern uint16_t *vga_printint(int32_t src);
+/*
+ * vga_printint overloads for specific sizes;
+ */
+#  define vga_printint32(src) vga_printint(src)
+#  define vga_printint16(src) vga_printint(((0xffff) & (src)))
+#  define vga_printint8(src) vga_printint((0xff) & (src)))
 
 /*
  * vga_printptr
