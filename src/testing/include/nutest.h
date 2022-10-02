@@ -18,7 +18,6 @@ struct TestStats {
 };
 
 
-
 static void (*_setUpFunc)(void) = 0;
 static void (*_oneTimeSetUpFunc)(void) = 0;
 static void (*_teardownFunc)(void) = 0;
@@ -78,6 +77,10 @@ static struct TestStats _testStats;
  */
 #  define nut_ConfigureOneTimeTeardownFunc(value) _nut_Safe(_oneTimeTeardownFunc = value;)
 
+/*
+ * nut_ExecuteUnitTest
+ * Runs the given @unitTest and prints the results to stdout.
+ */
 #  define nut_ExecuteUnitTest(unitTest) _nut_Safe(\
        _lastResult = testSuccess;\
        if (_setUpFunc) (*_setUpFunc)();\
@@ -105,6 +108,10 @@ static struct TestStats _testStats;
        if (_teardownFunc) (*_teardownFunc)();\
 )
 
+/*
+ * nut_ExecuteFixture
+ * Runs the fixture with the given @fixtureName and prints the results to stdout.
+ */
 #  define nut_ExecuteFixture(fixtureName) _nut_Safe(\
        printf("\x1b[35mFIXTURE\x1b[0m \x1b[37;4m%s\x1b[0m\n\n", #fixtureName);\
        if (_oneTimeSetUpFunc) (*_oneTimeSetUpFunc)();\
@@ -118,12 +125,16 @@ static struct TestStats _testStats;
        nut_ConfigureOneTimeSetUpFunc(0);\
        nut_ConfigureTeardownFunc(0);\
        \
-       printf("\x1b[35mSTATS\x1b[0m \x1b[37;4m%s\x1b[0m\n", #fixtureName);\
+       printf("\x1b[35mSTATS\x1b[0m \x1b[37;4m%s\x1b[0m\n\n", #fixtureName);\
        printf("\t%d tests in total ", _testStats.numberOfTests);\
        printf("(%d passed, %d failed)\n", _testStats.numberOfPasses, _testStats.numberOfFails);	\
        printf("\f");\
 )
 
+/*
+ * nut_FailTest
+ * Fails the test in which it is called manually.
+ */
 #  define nut_FailTest() _nut_Safe(\
        sprintf(_errorMessageBuffer,\
 	  "\x1b[33;2m%s, line %d:\x1b[0m\n\tFailure triggered manually.",\
@@ -133,6 +144,10 @@ static struct TestStats _testStats;
        _lastResult = testFailure;\
 )
 
+/*
+ * nut_Assert
+ * Evaluates the given @expr and prints the results to stdout.
+ */
 #  define nut_Assert(expr) _nut_Safe(\
        _testStats.numberOfAssertions++;\
        if (!(expr)) {\
@@ -146,6 +161,10 @@ static struct TestStats _testStats;
        }\
 )
 
+/*
+ * nut_Test
+ * Adds @text remarks at the position where it is called in the test report.
+ */
 # define nut_Text(text) _nut_Safe(\
        sprintf(_annotationBuffer, "\x1b[36;2mREMARK\x1b[0m %s\n", text);\
        printf("%s\n", _annotationBuffer);\

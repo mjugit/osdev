@@ -1,41 +1,92 @@
 #ifndef UTEST_H
-#define UTEST_H
+#  define UTEST_H
 
-#include "nutest.h"
-#include <string.h>
-#include <stdio.h>
+#  include "nutest.h"
+#  include <string.h>
+#  include <stdio.h>
 
-#define TEST_SUCCESS testSuccess
-#define TEST_FAILURE testFailure
+#  define TEST_SUCCESS testSuccess
+#  define TEST_FAILURE testFailure
 
-#define _safe(code) _nut_Safe(code)
+/*
+ * OBSOLETE
+ * _safe
+ * Was used to shield the @code to the sourrounding statements.
+ */
+#  define _safe(code) _nut_Safe(code)
 
-// Print the statistics of the last run
-#define report()
+/*
+ * OBSOLETE
+ * report
+ * Was used to print the statistics of a test run. The
+ * nut_ExecuteFixture method does this on its own now, so there is no
+ * need to trigger it manually.
+ */
+#  define report()
 
-// Defines a test
-#define deftest(name) nut_UnitTest(name)
+/*
+ * OBSOLETE
+ * deftest
+ * Was used to define a new unit test block.
+ */
+#  define deftest(name) nut_UnitTest(name)
 
-// Defines a group of tests, that should be executed together
-#define deffixture(name) nut_TestFixture(name)
+/*
+ * OBSOLETE
+ * deffixture
+ * Was used to define a group test.
+ */
+#  define deffixture(name) nut_TestFixture(name)
 
-// Sets the function that will be executed before each test
-#define setupfn(ptr) nut_ConfigureOneTimeSetUpFunc(ptr)
+/*
+ * OBSOLETE
+ * setupfn
+ * Was used to set the one time setup function for the next fixture
+ * execution.
+ */
+#  define setupfn(ptr) nut_ConfigureOneTimeSetUpFunc(ptr)
 
-// Sets the function that will be executed after each test.
-#define teardownfn(ptr) nut_ConfigureOneTimeTeardownFunc(ptr)
+/*
+ * OBSOLETE
+ * teardownfn
+ * Was used to set the one time teardown function for the next fixture
+ * execution.
+ */
+#  define teardownfn(ptr) nut_ConfigureOneTimeTeardownFunc(ptr)
 
-// Run a single test
-#define runtest(test) nut_ExecuteUnitTest(test)
+/*
+ * OBSOLETE
+ * runtest
+ * Was used to execute a unit test.
+ */
+#  define runtest(test) nut_ExecuteUnitTest(test)
 
-// Run a group of tests
-#define runfixture(name) nut_ExecuteFixture(name)
+/*
+ * OBSOLETE
+ * runfixture
+ * Was used to execute a set of unit tests.
+ */
+#  define runfixture(name) nut_Text("These tests use legacy keywords."); nut_ExecuteFixture(name)
 
-// Reset counters
-#define resetstats()
+/*
+ * OBSOLETE
+ * resetstats
+ * Was used to reset the statistics of the test runs.
+ */
+#  define resetstats()
 
-#define fact(expr) nut_Assert(expr)
+/*
+ * OBSOLETE
+ * fact
+ * Was used to define assertions.
+ */
+#  define fact(expr) nut_Assert(expr)
 
-#define fail() nut_FailTest()
+/*
+ * OBSOLETE
+ * fail
+ * Was used to manually fail a test.
+ */
+#  define fail() nut_FailTest()
 
 #endif // UTEST_H
