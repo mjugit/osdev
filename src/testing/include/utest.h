@@ -1,10 +1,21 @@
 #ifndef UTEST_H
 #  define UTEST_H
 
+/*
+ * This library is OBSOLETE!
+ * Please use the new syntax defined in 'nutest.h'. The methods
+ * included here are configured to forward or invalidate existing
+ * macro calls for compatibility reasons.
+ */
+
 #  include "nutest.h"
 #  include <string.h>
 #  include <stdio.h>
 
+/*
+ * OBSOLETE
+ * Was replaced with ETestResult.
+ */
 #  define TEST_SUCCESS testSuccess
 #  define TEST_FAILURE testFailure
 
