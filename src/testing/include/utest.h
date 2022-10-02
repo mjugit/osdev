@@ -1,85 +1,41 @@
 #ifndef UTEST_H
 #define UTEST_H
 
+#include "nutest.h"
 #include <string.h>
 #include <stdio.h>
 
-#define TEST_SUCCESS 0
-#define TEST_FAILURE 1
+#define TEST_SUCCESS testSuccess
+#define TEST_FAILURE testFailure
 
-
-#define MSGBUFF_LEN 1024
-static char _msgbuff[MSGBUFF_LEN];
-
-static unsigned int _ntests;
-static unsigned int _npassed;
-static unsigned int _nfailures;
-static unsigned int _state;
-
-static void (*_setupfn)(void) = NULL;
-static void (*_teardownfn)(void) = NULL;
-
-
-#define _safe(code) do { code } while(0);
+#define _safe(code) _nut_Safe(code)
 
 // Print the statistics of the last run
-#define report() _safe(\
-    printf("\nReport:\n");\
-    printf("  %8d %s\n", _ntests, "tests total");\
-    printf("  %8d %s\n", _npassed, "passed");\
-    printf("  %8d %s\n", _nfailures, "failed");\
-)
+#define report()
 
 // Defines a test
-#define deftest(name) static void name(void)
+#define deftest(name) nut_UnitTest(name)
 
 // Defines a group of tests, that should be executed together
-#define deffixture(name) static void name(void)
+#define deffixture(name) nut_TestFixture(name)
 
 // Sets the function that will be executed before each test
-#define setupfn(ptr) _safe(_setupfn = ptr;)
+#define setupfn(ptr) nut_ConfigureOneTimeSetUpFunc(ptr)
 
 // Sets the function that will be executed after each test.
-#define teardownfn(ptr) _safe(_teardownfn = ptr;)
+#define teardownfn(ptr) nut_ConfigureOneTimeTeardownFunc(ptr)
 
 // Run a single test
-#define runtest(test) _safe(\
-    if (_setupfn) \
-	(*_setupfn)();\
-    _state = TEST_SUCCESS;\
-    test();\
-    if (_state == TEST_FAILURE) {\
-	_nfailures++;\
-	printf("[FAIL] %s\n", #test);\
-	printf("%s\n", _msgbuff);\
-    } else {\
-      printf("[ OK ] %s\n", #test);\
-	_npassed++;\
-    };\
-    _ntests++;\
-    fflush(stdout);\
-    if (_teardownfn)\
-	(*_teardownfn)();\
-)
+#define runtest(test) nut_ExecuteUnitTest(test)
 
 // Run a group of tests
-#define runfixture(name) _safe(name(); _setupfn = _teardownfn = NULL;)
+#define runfixture(name) nut_ExecuteFixture(name)
 
 // Reset counters
-#define resetstats() _safe(_ntests = _npassed = _nfailures = 0;)
+#define resetstats()
 
-#define fact(expr) _safe(\
-    if (!(expr)) {\
-	snprintf(_msgbuff, MSGBUFF_LEN, "\t%s, l%d: (%s)",\
-		 __FILE__, __LINE__, #expr);\
-	_state = TEST_FAILURE;\
-    }\
-)
+#define fact(expr) nut_Assert(expr)
 
-#define fail() _safe(\
-    snprintf(_msgbuff, MSGBUFF_LEN, "\t%s, l%d: (%s)",\
-	     __FILE__, __LINE__, "fail");\
-    _state = TEST_FAILURE;\
-)
+#define fail() nut_FailTest()
 
 #endif // UTEST_H

@@ -93,11 +93,11 @@ static struct TestStats _testStats;
 	 _testStats.numberOfPasses++;\
        }\
        \
-       printf("\t%d %s passed.\n\n",\
+       printf("\t%d %s proven true.\n\n",\
 	      _testStats.numberOfAssertions,\
 	      _testStats.numberOfAssertions == 1\
-	      ? "assertion"\
-	      : "assertions");\
+	      ? "assertion has"\
+	      : "assertions have");\
        _testStats.numberOfAssertions = 0;\
        _testStats.numberOfTests++;\
        fflush(stdout);\
@@ -117,6 +117,11 @@ static struct TestStats _testStats;
        nut_ConfigureOneTimeTeardownFunc(0);\
        nut_ConfigureOneTimeSetUpFunc(0);\
        nut_ConfigureTeardownFunc(0);\
+       \
+       printf("\x1b[35mSTATS\x1b[0m \x1b[37;4m%s\x1b[0m\n", #fixtureName);\
+       printf("\t%d tests in total ", _testStats.numberOfTests);\
+       printf("(%d passed, %d failed)\n", _testStats.numberOfPasses, _testStats.numberOfFails);	\
+       printf("\f");\
 )
 
 #  define nut_FailTest() _nut_Safe(\
