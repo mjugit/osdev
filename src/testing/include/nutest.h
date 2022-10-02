@@ -1,6 +1,10 @@
 #ifndef NUTEST_H
 #  define NUTEST_H
 
+#  include <stdio.h>
+#  include <string.h>
+#  include <limits.h>
+
 enum ETestResult {
   testSuccess,
   testFailure
@@ -10,6 +14,7 @@ struct TestStats {
   unsigned int numberOfTests;
   unsigned int numberOfFails;
   unsigned int numberOfPasses;
+  unsigned int numberOfAssertions;
 };
 
 
@@ -21,6 +26,7 @@ static void (*_oneTimeTeardownFunc)(void) = 0;
 static enum ETestResult _lastResult;
 
 static char _errorMessageBuffer[1024];
+static char _annotationBuffer[USHRT_MAX];
 static struct TestStats _testStats;
 
 
@@ -70,41 +76,75 @@ static struct TestStats _testStats;
  * the following fixture, to @value. Will be reset as soon as the
  * fixture finished running.
  */
-#  define nut_ConfigureOneTimeTeardownFunc(value) _nut_Safe(_oneTimeTearDownFunc = value;)
+#  define nut_ConfigureOneTimeTeardownFunc(value) _nut_Safe(_oneTimeTeardownFunc = value;)
 
-#  define nut_ExecuteUnitTest(unitTest) _nut_safe(\
+#  define nut_ExecuteUnitTest(unitTest) _nut_Safe(\
+       _lastResult = testSuccess;\
        if (_setUpFunc) (*_setUpFunc)();\
        \
-       _lastResult = testSuccess;\
        unitTest();\
        \
        if (_lastResult == testFailure) {\
-	 _stats.numberOfFailures++;\
-	 printf("\x1b[31mFAIL\x1b[0m\t %s\n", #unitTest);\
-	 printf("%s\n", _errorMessageBuffer);\
+	 _testStats.numberOfFails++;\
+	 printf("\t\x1b[31mFAILED\x1b[0m \x1b[37;4m%s\x1b[0m\n", #unitTest);\
+	 printf("\t%s\n", _errorMessageBuffer);\
        } else {\
-	 printf("\x1b[32mPASS\x1b[0m %s\n", #unitTest);\
-	 _stats.numberOfPasses++;\
+	 printf("\t\x1b[32mPASSED\x1b[0m \x1b[37;4m%s\x1b[0m\n", #unitTest);\
+	 _testStats.numberOfPasses++;\
        }\
        \
-       _stats.numberOfTests++;\
+       printf("\t%d %s passed.\n\n",\
+	      _testStats.numberOfAssertions,\
+	      _testStats.numberOfAssertions == 1\
+	      ? "assertion"\
+	      : "assertions");\
+       _testStats.numberOfAssertions = 0;\
+       _testStats.numberOfTests++;\
        fflush(stdout);\
        \
        if (_teardownFunc) (*_teardownFunc)();\
 )
 
-#  define nut_ExecuteFixture(fixtureName) _nut_safe(\
+#  define nut_ExecuteFixture(fixtureName) _nut_Safe(\
+       printf("\x1b[35mFIXTURE\x1b[0m \x1b[37;4m%s\x1b[0m\n\n", #fixtureName);\
        if (_oneTimeSetUpFunc) (*_oneTimeSetUpFunc)();\
        \
        fixtureName();\
        \
-       if (_oneTimeTearDownFunc) (*oneTimeTearDownFunc)()\
+       if (_oneTimeTeardownFunc) (*_oneTimeTeardownFunc)();\
        \
        nut_ConfigureSetUpFunc(0);\
        nut_ConfigureOneTimeTeardownFunc(0);\
        nut_ConfigureOneTimeSetUpFunc(0);\
        nut_ConfigureTeardownFunc(0);\
 )
-       
+
+#  define nut_FailTest() _nut_Safe(\
+       sprintf(_errorMessageBuffer,\
+	  "\x1b[33;2m%s, line %d:\x1b[0m\n\tFailure triggered manually.",\
+	  __FILE__,\
+	  __LINE__\
+       ); \
+       _lastResult = testFailure;\
+)
+
+#  define nut_Assert(expr) _nut_Safe(\
+       _testStats.numberOfAssertions++;\
+       if (!(expr)) {\
+	 sprintf(_errorMessageBuffer,\
+	  "\x1b[33;2m%s, line %d:\x1b[0m\n\tAssertion was (%s).",\
+	  __FILE__,\
+          __LINE__,\
+	  #expr\
+         );\
+         _lastResult = testFailure;\
+       }\
+)
+
+# define nut_Text(text) _nut_Safe(\
+       sprintf(_annotationBuffer, "\x1b[36;2mREMARK\x1b[0m %s\n", text);\
+       printf("%s\n", _annotationBuffer);\
+)
+
 
 #endif
