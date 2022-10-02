@@ -79,10 +79,33 @@ void kprintf(char *format, ...) {
 void kencode_gdt(uint8_t *dest, struct gdt_entry src) {
   *dest++ = src.limit & 0xff;
   *dest++ = (src.limit >> 8) & 0xff;
+  
   *dest++ = src.base & 0xff;
   *dest++ = (src.base >> 8) & 0xff;
   *dest++ = (src.base >> 16) & 0xff;
   *dest++ = src.accessbyte;
   *dest++ = (src.flags << 4);
   *dest   = (src.base >> 24) & 0xff;
+}
+
+struct gdt_entry kdecode_gdt(uint8_t *src) {
+  struct gdt_entry result;
+
+  result.limit = (uint16_t) *src;
+  src += 2;
+
+  result.base = (uint16_t) *src;
+  src += 2;
+  result.base |= ((uint8_t)(*src) << 16);
+  src++;
+
+  result.accessbyte = (uint8_t) *src;
+  src++;
+
+  result.limit = (uint8_t) *src & 0x0f;
+  result.flags = (uint8_t) *src & 0xf0;
+
+  result.base = ((uint8_t)(*src) << 24);
+  
+  return result;
 }
