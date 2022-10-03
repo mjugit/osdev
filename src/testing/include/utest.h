@@ -1,85 +1,103 @@
 #ifndef UTEST_H
-#define UTEST_H
+#  define UTEST_H
 
-#include <string.h>
-#include <stdio.h>
+/*
+ * This library is OBSOLETE!
+ * Please use the new syntax defined in 'nutest.h'. The methods
+ * included here are configured to forward or invalidate existing
+ * macro calls for compatibility reasons.
+ */
 
-#define TEST_SUCCESS 0
-#define TEST_FAILURE 1
+#  include "nutest.h"
+#  include <string.h>
+#  include <stdio.h>
 
+/*
+ * OBSOLETE
+ * Was replaced with ETestResult.
+ */
+#  define TEST_SUCCESS testSuccess
+#  define TEST_FAILURE testFailure
 
-#define MSGBUFF_LEN 1024
-static char _msgbuff[MSGBUFF_LEN];
+/*
+ * OBSOLETE
+ * _safe
+ * Was used to shield the @code to the sourrounding statements.
+ */
+#  define _safe(code) _nut_Safe(code)
 
-static unsigned int _ntests;
-static unsigned int _npassed;
-static unsigned int _nfailures;
-static unsigned int _state;
+/*
+ * OBSOLETE
+ * report
+ * Was used to print the statistics of a test run. The
+ * nut_ExecuteFixture method does this on its own now, so there is no
+ * need to trigger it manually.
+ */
+#  define report()
 
-static void (*_setupfn)(void) = NULL;
-static void (*_teardownfn)(void) = NULL;
+/*
+ * OBSOLETE
+ * deftest
+ * Was used to define a new unit test block.
+ */
+#  define deftest(name) nut_UnitTest(name)
 
+/*
+ * OBSOLETE
+ * deffixture
+ * Was used to define a group test.
+ */
+#  define deffixture(name) nut_TestFixture(name)
 
-#define _safe(code) do { code } while(0);
+/*
+ * OBSOLETE
+ * setupfn
+ * Was used to set the one time setup function for the next fixture
+ * execution.
+ */
+#  define setupfn(ptr) nut_ConfigureOneTimeSetUpFunc(ptr)
 
-// Print the statistics of the last run
-#define report() _safe(\
-    printf("\nReport:\n");\
-    printf("  %8d %s\n", _ntests, "tests total");\
-    printf("  %8d %s\n", _npassed, "passed");\
-    printf("  %8d %s\n", _nfailures, "failed");\
-)
+/*
+ * OBSOLETE
+ * teardownfn
+ * Was used to set the one time teardown function for the next fixture
+ * execution.
+ */
+#  define teardownfn(ptr) nut_ConfigureOneTimeTeardownFunc(ptr)
 
-// Defines a test
-#define deftest(name) static void name(void)
+/*
+ * OBSOLETE
+ * runtest
+ * Was used to execute a unit test.
+ */
+#  define runtest(test) nut_ExecuteUnitTest(test)
 
-// Defines a group of tests, that should be executed together
-#define deffixture(name) static void name(void)
+/*
+ * OBSOLETE
+ * runfixture
+ * Was used to execute a set of unit tests.
+ */
+#  define runfixture(name) nut_Text("These tests use legacy keywords."); nut_ExecuteFixture(name)
 
-// Sets the function that will be executed before each test
-#define setupfn(ptr) _safe(_setupfn = ptr;)
+/*
+ * OBSOLETE
+ * resetstats
+ * Was used to reset the statistics of the test runs.
+ */
+#  define resetstats()
 
-// Sets the function that will be executed after each test.
-#define teardownfn(ptr) _safe(_teardownfn = ptr;)
+/*
+ * OBSOLETE
+ * fact
+ * Was used to define assertions.
+ */
+#  define fact(expr) nut_Assert(expr)
 
-// Run a single test
-#define runtest(test) _safe(\
-    if (_setupfn) \
-	(*_setupfn)();\
-    _state = TEST_SUCCESS;\
-    test();\
-    if (_state == TEST_FAILURE) {\
-	_nfailures++;\
-	printf("[FAIL] %s\n", #test);\
-	printf("%s\n", _msgbuff);\
-    } else {\
-      printf("[ OK ] %s\n", #test);\
-	_npassed++;\
-    };\
-    _ntests++;\
-    fflush(stdout);\
-    if (_teardownfn)\
-	(*_teardownfn)();\
-)
-
-// Run a group of tests
-#define runfixture(name) _safe(name(); _setupfn = _teardownfn = NULL;)
-
-// Reset counters
-#define resetstats() _safe(_ntests = _npassed = _nfailures = 0;)
-
-#define fact(expr) _safe(\
-    if (!(expr)) {\
-	snprintf(_msgbuff, MSGBUFF_LEN, "\t%s, l%d: (%s)",\
-		 __FILE__, __LINE__, #expr);\
-	_state = TEST_FAILURE;\
-    }\
-)
-
-#define fail() _safe(\
-    snprintf(_msgbuff, MSGBUFF_LEN, "\t%s, l%d: (%s)",\
-	     __FILE__, __LINE__, "fail");\
-    _state = TEST_FAILURE;\
-)
+/*
+ * OBSOLETE
+ * fail
+ * Was used to manually fail a test.
+ */
+#  define fail() nut_FailTest()
 
 #endif // UTEST_H

@@ -86,6 +86,7 @@ deffixture(kernel_output) {
 }
 
 
+
 void setup_graphics(void) {
   vga_configure(frontbuffer, backbuffer, COLS, ROWS, TABLEN);
   vga_reset();
