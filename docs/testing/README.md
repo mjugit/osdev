@@ -10,3 +10,77 @@ In unit testing, we generally set up a certain environment, execute a function i
 
 ## The [`nutest.h` header file]("../../src/testing/include/nutest.h)
 
+#### nut_UnitTest
+Defines a test method signature with the given @name.
+
+```c
+nut_UnitTest(name)
+```
+
+#### nut_TestFixture
+Defines a test fixture signature with the given @name.
+
+```c
+nut_TestFixture(name)
+```
+
+#### nut_ConfigureSetUpFunc
+Sets the function, that is executed before each test to
+@value. Will be reset as soon as a fixture finished running.
+
+```c
+nut_ConfigureSetUpFunc(value)
+```
+
+#### nut_ConfigureOneTimeSetUpFunc
+Sets the function, that is executed once before the first test of
+the following fixture, to @value. Will be reset as soon as the
+fixture finished running.
+ ```c
+nut_ConfigureOneTimeSetUpFunc(value) 
+```
+
+#### nut_ConfigureTeardownFunc
+Sets the function, that is executed after each test to
+@value. Will be reset as soon as a fixture finished running.
+```c
+nut_ConfigureTeardownFunc(value)
+```
+
+#### nut_ConfigureOneTimeTeardownFunc
+Sets the function, that is executed once after the last test of
+the following fixture, to @value. Will be reset as soon as the
+fixture finished running.
+ ```c
+ nut_ConfigureOneTimeTeardownFunc(value)
+```
+
+#### nut_ExecuteUnitTest
+Runs the given @unitTest and prints the results to stdout.
+```c
+nut_ExecuteUnitTest(unitTest)
+```
+
+#### nut_ExecuteFixture
+Runs the fixture with the given @fixtureName and prints the results to stdout.
+```c
+nut_ExecuteFixture(fixtureName)
+```
+
+#### nut_FailTest
+Fails the test in which it is called manually.
+```c
+nut_FailTest()
+```
+
+#### nut_Assert
+Evaluates the given @expr and prints the results to stdout.
+```c
+nut_Assert(expr)
+```
+
+#### nut_Test
+Adds @text remarks at the position where it is called in the test report.
+```c
+nut_Text(text)
+```
