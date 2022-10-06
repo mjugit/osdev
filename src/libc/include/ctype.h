@@ -32,6 +32,11 @@ extern int isGraph(int c);
 extern int isLower(int c);
 
 /*
+ *checks whether the passed character is an uppercase letter.
+ */
+extern int isUpper(int c);
+
+/*
  *checks whether the passed character is printable
  */
 extern int isPrint(int c);
@@ -47,14 +52,9 @@ extern int isPunct(int c);
 extern int isSpace(int c);
 
 /*
- *checks whether the passed character is an uppercase letter.
- */
-extern int isUpper(int c);
-
-/*
  *checks whether the passed character is a hexadecimal digit
  */
-extern int isxDigit(int c);
+extern int isXDigit(int c);
 
 /*
  *converts uppercase letters to lowercase
